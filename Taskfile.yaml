@@ -1,0 +1,23 @@
+version: 3
+
+tasks:
+  generate:
+    desc: Generate all code
+    cmds:
+      - sqlc generate
+      - templ generate
+      - tailwindcss -i ./static/css/input.css -o ./static/css/styles.css
+
+  setup:
+    desc: Install dependencies
+    cmds:
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+      - go install github.com/air-verse/air@latest
+
+  release:
+    desc: Release
+    cmds:
+      - docker build -t corka149/rental:6.0.9 .
+      - docker push corka149/rental:6.0.9

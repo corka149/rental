@@ -1,0 +1,10 @@
+version: 3
+
+tasks:
+  migrate:
+    cmds:
+      - goose status
+      - goose up
+    env:
+      GOOSE_DBSTRING: postgres://myadmin:mypassword@localhost:5432/rental_db
+      GOOSE_DRIVER: postgres
