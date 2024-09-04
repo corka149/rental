@@ -2,3 +2,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.neonText {
+    animation: pulsate 2.5s infinite alternate;
+}
+
+@keyframes pulsate {
+    100% {
+        /* Larger blur radius */
+        text-shadow:
+                0 0 4px #fff,
+                0 0 11px #fff,
+                0 0 19px #fff,
+                0 0 40px #02ff04,
+                0 0 80px #02ff04,
+                0 0 90px #02ff04,
+                0 0 100px #02ff04,
+                0 0 150px #02ff04;
+    }
+    0% {
+        /* Smaller blur radius */
+        text-shadow:
+                0 0 2px #fff,
+                0 0 4px #fff,
+                0 0 6px #fff,
+                0 0 10px #02ff04,
+                0 0 45px #02ff04,
+                0 0 55px #02ff04,
+                0 0 70px #02ff04,
+                0 0 80px #02ff04;
+    }
+}

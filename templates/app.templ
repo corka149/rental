@@ -1,0 +1,90 @@
+package templates
+
+templ Layout(contents templ.Component) {
+	<!DOCTYPE html>
+	<html class="h-full" lang="de">
+		@Header()
+		<body class="flex flex-col justify-between h-full">
+			@Menu()
+			<main class="flex-grow">
+				@contents
+			</main>
+			@Footer()
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+			<script src="/static/js/app.js"></script>
+		</body>
+	</html>
+}
+
+templ Header() {
+	<head>
+		<title>Rental</title>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!-- favicon -->
+		<link rel="icon" href="/static/img/favicon.ico" type="image/x-icon"/>
+		<link rel="stylesheet" href="/static/css/styles.css"/>
+	</head>
+}
+
+templ Footer() {
+	<footer class="bg-indigo-900 text-white p-2 inset-x-0 bottom-0">
+		<div class="max-w-6xl mx-auto px-2 py-2">
+			<div class="text-center">
+				<span>Made with love and Go ❤️</span>
+				-
+				<a href="https://github.com/corka149/rental" class="text-blue-400 hover:text-blue-600">github.com/corka149/rental</a>
+			</div>
+		</div>
+	</footer>
+}
+
+templ Menu() {
+	<div class="bg-indigo-900 text-white">
+		<nav class="max-w-6xl mx-auto px-4">
+			<div class="flex justify-between">
+                <!-- Logo or Brand -->
+				<div class="flex space-x-4">
+					<div class="neonText text-4xl py-3">
+						Rental
+					</div>
+				</div>
+                <!-- Primary Navbar items -->
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="/" class="py-5 px-3 hover:underline">Home</a>
+                    <a href="/objects" class="py-5 px-3 hover:underline">Objekte</a>
+                    <a href="/holidays" class="py-5 px-3 hover:underline">Urlaube</a>
+                    <a href="/rentals" class="py-5 px-3 hover:underline">Vermietungen</a>
+                </div>
+				<!-- Mobile menu button -->
+				<div class="md:hidden flex items-center">
+					<button class="mobile-menu-button">
+						<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</nav>
+		<!-- Mobile Menu -->
+		<div class="mobile-menu hidden md:hidden">
+			<a href="/" class="block py-2 px-4 text-sm hover:bg-blue-400">Home</a>
+			<a href="/objects" class="block py-2 px-4 text-sm hover:bg-blue-400">Objekte</a>
+			<a href="/holidays" class="block py-2 px-4 text-sm hover:bg-blue-400">Urlaube</a>
+			<a href="/rentals" class="block py-2 px-4 text-sm hover:bg-blue-400">Vermietung</a>
+		</div>
+	</div>
+	<script>
+  const btn = document.querySelector(".mobile-menu-button");
+  const menu = document.querySelector(".mobile-menu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+}
+
+templ Index() {
+	<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+	</div>
+}
