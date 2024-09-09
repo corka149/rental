@@ -1,5 +1,10 @@
 package templates
 
+
+import (
+	"github.com/invopop/ctxi18n/i18n"
+)
+
 templ Layout(contents templ.Component) {
 	<!DOCTYPE html>
 	<html class="h-full" lang="de">
@@ -18,7 +23,7 @@ templ Layout(contents templ.Component) {
 
 templ Header() {
 	<head>
-		<title>Rental</title>
+		<title>{ i18n.T(ctx, "rental") }</title>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<!-- favicon -->
@@ -46,15 +51,15 @@ templ Menu() {
                 <!-- Logo or Brand -->
 				<div class="flex space-x-4">
 					<div class="neonText text-4xl py-3">
-						Rental
+						{ i18n.T(ctx, "rental") }
 					</div>
 				</div>
                 <!-- Primary Navbar items -->
                 <div class="hidden md:flex items-center space-x-1">
-                    <a href="/" class="py-5 px-3 hover:underline">Home</a>
-                    <a href="/objects" class="py-5 px-3 hover:underline">Objekte</a>
-                    <a href="/holidays" class="py-5 px-3 hover:underline">Urlaube</a>
-                    <a href="/rentals" class="py-5 px-3 hover:underline">Vermietungen</a>
+                    <a href="/" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.home") }</a>
+                    <a href="/objects" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.objects") }</a>
+                    <a href="/holidays" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.holidays") }</a>
+                    <a href="/rentals" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.rentals") }</a>
                 </div>
 				<!-- Mobile menu button -->
 				<div class="md:hidden flex items-center">
@@ -68,10 +73,10 @@ templ Menu() {
 		</nav>
 		<!-- Mobile Menu -->
 		<div class="mobile-menu hidden md:hidden">
-			<a href="/" class="block py-2 px-4 text-sm hover:bg-blue-400">Home</a>
-			<a href="/objects" class="block py-2 px-4 text-sm hover:bg-blue-400">Objekte</a>
-			<a href="/holidays" class="block py-2 px-4 text-sm hover:bg-blue-400">Urlaube</a>
-			<a href="/rentals" class="block py-2 px-4 text-sm hover:bg-blue-400">Vermietung</a>
+			<a href="/" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.home") }</a>
+			<a href="/objects" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.objects") }</a>
+			<a href="/holidays" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.holidays") }</a>
+			<a href="/rentals" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.rentals") }</a>
 		</div>
 	</div>
 	<script>

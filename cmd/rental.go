@@ -4,13 +4,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/corka149/rental"
-	"github.com/corka149/rental/app"
-	"github.com/corka149/rental/datastore"
-	"github.com/corka149/rental/schema"
 	"log"
 	"os"
 	"os/signal"
+
+	"github.com/corka149/rental"
+	"github.com/corka149/rental/app"
+	"github.com/corka149/rental/datastore"
+	"github.com/corka149/rental/locales"
+	"github.com/corka149/rental/middleware"
+	"github.com/corka149/rental/schema"
+	"github.com/invopop/ctxi18n"
 
 	"github.com/gin-gonic/gin"
 
@@ -37,6 +41,10 @@ func Run(ctx context.Context, getenv func(string) string) error {
 
 	config, err := rental.Setup(ctx, getenv)
 
+	if err := ctxi18n.Load(locales.Content); err != nil {
+		log.Fatalf("error loading locales: %v", err)
+	}
+
 	if err != nil {
 		return fmt.Errorf("failed to setup config: %w", err)
 	}
@@ -53,6 +61,7 @@ func Run(ctx context.Context, getenv func(string) string) error {
 
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
+	router.Use(middleware.NewI18n())
 
 	app.RegisterRoutes(router, ctx, queries, config)
 
