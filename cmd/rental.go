@@ -15,7 +15,10 @@ import (
 	"github.com/corka149/rental/middleware"
 	"github.com/corka149/rental/schema"
 	"github.com/invopop/ctxi18n"
+	"github.com/jackc/pgx/v5/stdlib"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/postgres"
 	"github.com/gin-gonic/gin"
 
 	"github.com/gin-contrib/gzip"
@@ -39,29 +42,39 @@ func Run(ctx context.Context, getenv func(string) string) error {
 		return fmt.Errorf("failed to load .env file: %w", err)
 	}
 
+	// Setup config
 	config, err := rental.Setup(ctx, getenv)
-
-	if err := ctxi18n.Load(locales.Content); err != nil {
-		log.Fatalf("error loading locales: %v", err)
-	}
 
 	if err != nil {
 		return fmt.Errorf("failed to setup config: %w", err)
 	}
 
 	defer config.DbPool.Close()
+	queries := datastore.New(config.DbPool)
 
+	// Load locales
+	if err := ctxi18n.Load(locales.Content); err != nil {
+		log.Fatalf("error loading locales: %v", err)
+	}
+
+	// Session store
+	db := stdlib.OpenDBFromPool(config.DbPool)
+	store, err := postgres.NewStore(db, []byte("secret"))
+	if err != nil {
+		log.Fatalf("failed to create store: %v", err)
+	}
+
+	// Run migration
 	err = schema.RunMigration(ctx, config)
 
 	if err != nil {
 		return fmt.Errorf("failed to run migration: %w", err)
 	}
 
-	queries := datastore.New(config.DbPool)
-
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(middleware.NewI18n())
+	router.Use(sessions.Sessions("rental", store))
 
 	app.RegisterRoutes(router, ctx, queries, config)
 

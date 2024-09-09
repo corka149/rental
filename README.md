@@ -21,3 +21,4 @@ ADMIN_USER: The username for the admin user. Default is "admin".
 ADMIN_PASSWORD: The password for the admin user. Default is "password".
 DB_URL: The URL for the database. Default is "postgres://myadmin:mypassword@localhost:5432/rental_db".
 PORT: The port for the application. Default is "8081".
+SECRET: The secret for the application. Default is "secret".

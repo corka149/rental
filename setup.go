@@ -4,6 +4,7 @@
 // ADMIN_PASSWORD: The password for the admin user. Default is "password".
 // DB_URL: The URL for the database. Default is "postgres://myadmin:mypassword@localhost:5432/rental_db".
 // PORT: The port for the application. Default is "8081".
+// SECRET: The secret for the application. Default is "secret".
 package rental
 
 import (
@@ -18,6 +19,7 @@ type Config struct {
 	AdminUserPassword string
 	DbPool            *pgxpool.Pool
 	Port              string
+	Secret            string
 }
 
 const (
@@ -25,6 +27,7 @@ const (
 	defaultAdminUser     = "admin"
 	defaultAdminPassword = "password"
 	defaultPort          = "8081"
+	defaultSecret        = "secret"
 )
 
 func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
@@ -39,11 +42,13 @@ func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
 	adminUser := cmp.Or(getenv("ADMIN_USER"), defaultAdminUser)
 	adminPassword := cmp.Or(getenv("ADMIN_PASSWORD"), defaultAdminPassword)
 	port := cmp.Or(getenv("PORT"), defaultPort)
+	secret := cmp.Or(getenv("SECRET"), defaultSecret)
 
 	return &Config{
 		AdminUsername:     adminUser,
 		AdminUserPassword: adminPassword,
 		DbPool:            dbpool,
 		Port:              port,
+		Secret:            secret,
 	}, nil
 }
