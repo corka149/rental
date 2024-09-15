@@ -26,3 +26,9 @@ type Rental struct {
 	To          pgtype.Date
 	Description pgtype.Text
 }
+
+type User struct {
+	ID       int32
+	Email    string
+	Password string
+}
