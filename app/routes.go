@@ -15,4 +15,8 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 
 	// ==================== HOME ====================
 	router.GET("/", indexHome())
+
+	// ==================== AUTH ====================
+	auth := router.Group("/auth")
+	auth.POST("/register", register(queries))
 }

@@ -31,4 +31,5 @@ type User struct {
 	ID       int32
 	Email    string
 	Password string
+	Name     string
 }
