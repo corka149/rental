@@ -12,3 +12,6 @@ UPDATE users SET email = $1, password = $2, name = $3 WHERE id = $4 RETURNING *;
 
 -- name: DeleteUser :one
 DELETE FROM users WHERE id = $1 RETURNING *;
+
+-- name: GetUserByEmail :one
+SELECT * FROM users WHERE email = $1;

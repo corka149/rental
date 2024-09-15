@@ -19,4 +19,7 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	// ==================== AUTH ====================
 	auth := router.Group("/auth")
 	auth.POST("/register", register(queries))
+	auth.GET("/login", loginForm())
+	auth.POST("/login", login(queries))
+	auth.GET("/logout", logout())
 }
