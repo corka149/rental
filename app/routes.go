@@ -14,12 +14,12 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	router.StaticFS("/static", http.FS(static.Assets))
 
 	// ==================== HOME ====================
-	router.GET("/", indexHome())
+	router.GET("/", indexHome(queries))
 
 	// ==================== AUTH ====================
 	auth := router.Group("/auth")
 	auth.POST("/register", register(queries))
-	auth.GET("/login", loginForm())
+	auth.GET("/login", loginForm(queries))
 	auth.POST("/login", login(queries))
 	auth.GET("/logout", logout())
 }

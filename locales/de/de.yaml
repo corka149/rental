@@ -1,7 +1,13 @@
 de:
   rental: "Vermietung"
   menu:
+    login: "Anmelden"
+    logout: "Abmelden"
     home: "Startseite"
     objects: "Objekte"
     holidays: "Urlaube"
     rentals: "Vermietungen"
+  auth:
+    email: "E-Mail"
+    password: "Passwort"
+    login: "Anmelden"

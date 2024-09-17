@@ -1,7 +1,13 @@
 en:
   rental: "Rental"
   menu:
+    login: "Login"
+    logout: "Logout"
     home: "Home"
     objects: "Objects"
     holidays: "Holidays"
     rentals: "Rentals"
+  auth:
+    email: "Email"
+    password: "Password"
+    login: "Login"

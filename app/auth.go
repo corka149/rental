@@ -51,9 +51,11 @@ func register(quries *datastore.Queries) gin.HandlerFunc {
 	}
 }
 
-func loginForm() gin.HandlerFunc {
+func loginForm(queries *datastore.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		templates.Layout(templates.Login()).Render(c.Request.Context(), c.Writer)
+		user := getUserFromSession(c, queries)
+
+		templates.Layout(user.Name, templates.Login()).Render(c.Request.Context(), c.Writer)
 	}
 }
 
@@ -72,7 +74,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 		userData, err := quries.GetUserByEmail(c, email)
 
 		if err != nil {
-			log.Println(err)
+			log.Printf("Error getting user by email: %v", err)
 			c.Redirect(200, "/auth/login")
 			return
 		}
@@ -80,7 +82,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 		err = bcrypt.CompareHashAndPassword([]byte(userData.Password), []byte(password))
 
 		if err != nil {
-			log.Println(err)
+			log.Printf("Password not match: %v", err)
 			c.Redirect(200, "/auth/login")
 			return
 		}
@@ -98,6 +100,24 @@ func logout() gin.HandlerFunc {
 		session := sessions.Default(c)
 		session.Clear()
 		session.Save()
-		c.Status(200)
+		c.Redirect(302, "/")
 	}
+}
+
+func getUserFromSession(c *gin.Context, queries *datastore.Queries) datastore.User {
+	session := sessions.Default(c)
+	userID, ok := session.Get("user").(int32)
+
+	if !ok {
+		return datastore.User{}
+	}
+
+	user, err := queries.GetUserById(c, userID)
+
+	if err != nil {
+		log.Printf("Error getting user from session: %v", err)
+		return datastore.User{}
+	}
+
+	return user
 }
