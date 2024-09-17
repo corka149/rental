@@ -50,9 +50,11 @@ templ Menu(userName string) {
 			<div class="flex justify-between">
                 <!-- Logo or Brand -->
 				<div class="flex space-x-4">
-					<div class="neonText text-4xl py-3">
-						{ i18n.T(ctx, "rental") }
-					</div>
+					<a href="/">
+						<div class="neonText text-4xl py-3">
+							{ i18n.T(ctx, "rental") }
+						</div>
+					</a>
 				</div>
                 <!-- Primary Navbar items -->
                 <div class="hidden md:flex items-center space-x-1">
