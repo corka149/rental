@@ -11,7 +11,7 @@ templ Layout(userName string, contents templ.Component) {
 		@Header()
 		<body class="flex flex-col justify-between h-full">
 			@Menu(userName)
-			<main class="flex-grow">
+			<main class="flex-grow px-2">
 				@contents
 			</main>
 			@Footer()

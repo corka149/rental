@@ -11,3 +11,10 @@ de:
     email: "E-Mail"
     password: "Passwort"
     login: "Anmelden"
+  object:
+    objects: "Objekte"
+    newObject: "Neues Objekt"
+    name: "Name"
+    create: "Erstellen"
+    deleteObject: "Objekt löschen"
+    deleteObjectDialog: "Soll das Objekt gelöscht werden?"

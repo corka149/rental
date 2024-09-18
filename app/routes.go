@@ -28,4 +28,12 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	auth.GET("/login", loginForm(queries))
 	auth.POST("/login", rLimiter, login(queries))
 	auth.GET("/logout", logout())
+
+	// ==================== OBJECT ====================
+	router.GET("/objects", indexObjects(queries))
+	router.GET("/objects/new", newObjectForm(queries))
+	router.POST("/objects/new", createObject(queries))
+	router.GET("/objects/:id", updateObjectForm(queries))
+	router.POST("/objects/:id", updateObject(queries))
+	router.POST("/objects/:id/delete", deleteObject(queries))
 }
