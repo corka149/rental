@@ -43,7 +43,7 @@ func (q *Queries) GetObjectById(ctx context.Context, id int32) (Object, error) {
 }
 
 const getObjects = `-- name: GetObjects :many
-SELECT id, name FROM objects
+SELECT id, name FROM objects ORDER BY name
 `
 
 func (q *Queries) GetObjects(ctx context.Context) ([]Object, error) {

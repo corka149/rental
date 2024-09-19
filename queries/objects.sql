@@ -1,5 +1,5 @@
 -- name: GetObjects :many
-SELECT * FROM objects;
+SELECT * FROM objects ORDER BY name;
 
 -- name: GetObjectById :one
 SELECT * FROM objects WHERE id = $1;

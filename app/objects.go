@@ -21,7 +21,7 @@ func indexObjects(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		templates.Layout(user.Name, templates.ObjectIndexes(objects)).Render(c.Request.Context(), c.Writer)
+		templates.Layout(user.Name, templates.ObjectIndex(objects)).Render(c.Request.Context(), c.Writer)
 	}
 }
 

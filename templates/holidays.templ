@@ -1,0 +1,63 @@
+package templates
+
+import (
+	"github.com/invopop/ctxi18n/i18n"
+    "github.com/corka149/rental/datastore"
+	"fmt"
+)
+
+templ HolidayIndex(holidays []datastore.Holiday) {
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+		<h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.holidays") }</h1>
+		<a href="/holidays/new" class="block w-40 mx-auto py-2 px-4 my-2 mx-4 bg-gray-300 text-white rounded-lg text-center">{ i18n.T(ctx, "holiday.newHoliday") }</a>
+		<ul class="text-center">
+			for _, holiday := range holidays {
+				<li class="max-w-sm mx-auto">
+					<a href={ templ.URL(fmt.Sprintf("/holidays/%d", holiday.ID)) } class="block p-4 bg-gray-100 hover:bg-gray-200 rounded-lg">
+						{ holiday.Beginning.Time.Format("02.01.2006") } - { holiday.Ending.Time.Format("02.01.2006") }
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+templ HolidayForm(holiday datastore.Holiday, target string) {
+    <div class="max-w-md mx-auto">
+        if target == "new" {
+            <h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.newHoliday") }</h1>
+        } else {
+            <h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.editHoliday") }</h1>
+        }
+        <form action={ templ.URL("/holidays/" + target) } method="post" class="space-y-4">
+            <div>
+				<label for="title" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "holiday.description") }</label>
+				<input required type="text" name="title" id="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value={ holiday.Title }/>
+			</div>
+            <div>
+                <label for="beginning" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "holiday.from") }</label>
+                <input required type="date" name="beginning" id="beginning" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value={ holiday.Beginning.Time.Format("2006-01-02") }/>
+            </div>
+            <div>
+                <label for="ending" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "holiday.to") }</label>
+                <input required type="date" name="ending" id="ending" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" value={ holiday.Ending.Time.Format("2006-01-02") }/>
+            </div>
+            <button type="submit" value="Create" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                { i18n.T(ctx, "holiday.save") }
+            </button>
+        </form>
+        if target != "new" {
+            <form
+                action={ templ.URL(fmt.Sprintf("/holidays/%s/delete", target)) }
+                method="post"
+                class="space-y-4 py-2"
+                id="confirmed-form"
+                data-title={ i18n.T(ctx, "holiday.deleteHolidayDialog") }
+            >
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-300 hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    { i18n.T(ctx, "holiday.deleteHoliday") }
+                </button>
+            </form>
+        }
+    </div>
+}

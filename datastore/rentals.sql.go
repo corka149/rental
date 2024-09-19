@@ -58,7 +58,7 @@ func (q *Queries) GetRentalById(ctx context.Context, id int32) (Rental, error) {
 }
 
 const getRentals = `-- name: GetRentals :many
-SELECT id, object_id, "from", "to", description FROM rentals
+SELECT id, object_id, "from", "to", description FROM rentals ORDER BY "from"
 `
 
 func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {

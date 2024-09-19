@@ -36,4 +36,12 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	router.GET("/objects/:id", updateObjectForm(queries))
 	router.POST("/objects/:id", updateObject(queries))
 	router.POST("/objects/:id/delete", deleteObject(queries))
+
+	// ==================== HOLIDAY ====================
+	router.GET("/holidays", indexHolidays(queries))
+	router.GET("/holidays/new", newHolidayForm(queries))
+	router.POST("/holidays/new", createHoliday(queries))
+	router.GET("/holidays/:id", updateHolidayForm(queries))
+	router.POST("/holidays/:id", updateHoliday(queries))
+	router.POST("/holidays/:id/delete", deleteHoliday(queries))
 }

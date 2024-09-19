@@ -9,9 +9,10 @@ import (
 )
 
 type Holiday struct {
-	ID   int32
-	From pgtype.Date
-	To   pgtype.Date
+	ID        int32
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+	Title     string
 }
 
 type Object struct {

@@ -12,45 +12,61 @@ import (
 )
 
 const createHoliday = `-- name: CreateHoliday :one
-INSERT INTO holidays ("from", "to") VALUES ($1, $2) RETURNING id, "from", "to"
+INSERT INTO holidays (beginning, ending, title) VALUES ($1, $2, $3) RETURNING id, beginning, ending, title
 `
 
 type CreateHolidayParams struct {
-	From pgtype.Date
-	To   pgtype.Date
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+	Title     string
 }
 
 func (q *Queries) CreateHoliday(ctx context.Context, arg CreateHolidayParams) (Holiday, error) {
-	row := q.db.QueryRow(ctx, createHoliday, arg.From, arg.To)
+	row := q.db.QueryRow(ctx, createHoliday, arg.Beginning, arg.Ending, arg.Title)
 	var i Holiday
-	err := row.Scan(&i.ID, &i.From, &i.To)
+	err := row.Scan(
+		&i.ID,
+		&i.Beginning,
+		&i.Ending,
+		&i.Title,
+	)
 	return i, err
 }
 
 const deleteHoliday = `-- name: DeleteHoliday :one
-DELETE FROM holidays WHERE id = $1 RETURNING id, "from", "to"
+DELETE FROM holidays WHERE id = $1 RETURNING id, beginning, ending, title
 `
 
 func (q *Queries) DeleteHoliday(ctx context.Context, id int32) (Holiday, error) {
 	row := q.db.QueryRow(ctx, deleteHoliday, id)
 	var i Holiday
-	err := row.Scan(&i.ID, &i.From, &i.To)
+	err := row.Scan(
+		&i.ID,
+		&i.Beginning,
+		&i.Ending,
+		&i.Title,
+	)
 	return i, err
 }
 
 const getHolidayById = `-- name: GetHolidayById :one
-SELECT id, "from", "to" FROM holidays WHERE id = $1
+SELECT id, beginning, ending, title FROM holidays WHERE id = $1
 `
 
 func (q *Queries) GetHolidayById(ctx context.Context, id int32) (Holiday, error) {
 	row := q.db.QueryRow(ctx, getHolidayById, id)
 	var i Holiday
-	err := row.Scan(&i.ID, &i.From, &i.To)
+	err := row.Scan(
+		&i.ID,
+		&i.Beginning,
+		&i.Ending,
+		&i.Title,
+	)
 	return i, err
 }
 
 const getHolidays = `-- name: GetHolidays :many
-SELECT id, "from", "to" FROM holidays
+SELECT id, beginning, ending, title FROM holidays ORDER BY beginning
 `
 
 func (q *Queries) GetHolidays(ctx context.Context) ([]Holiday, error) {
@@ -62,7 +78,12 @@ func (q *Queries) GetHolidays(ctx context.Context) ([]Holiday, error) {
 	var items []Holiday
 	for rows.Next() {
 		var i Holiday
-		if err := rows.Scan(&i.ID, &i.From, &i.To); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Beginning,
+			&i.Ending,
+			&i.Title,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -74,18 +95,29 @@ func (q *Queries) GetHolidays(ctx context.Context) ([]Holiday, error) {
 }
 
 const updateHoliday = `-- name: UpdateHoliday :one
-UPDATE holidays SET "from" = $1, "to" = $2 WHERE id = $3 RETURNING id, "from", "to"
+UPDATE holidays SET beginning = $1, ending = $2, title = $3 WHERE id = $4 RETURNING id, beginning, ending, title
 `
 
 type UpdateHolidayParams struct {
-	From pgtype.Date
-	To   pgtype.Date
-	ID   int32
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+	Title     string
+	ID        int32
 }
 
 func (q *Queries) UpdateHoliday(ctx context.Context, arg UpdateHolidayParams) (Holiday, error) {
-	row := q.db.QueryRow(ctx, updateHoliday, arg.From, arg.To, arg.ID)
+	row := q.db.QueryRow(ctx, updateHoliday,
+		arg.Beginning,
+		arg.Ending,
+		arg.Title,
+		arg.ID,
+	)
 	var i Holiday
-	err := row.Scan(&i.ID, &i.From, &i.To)
+	err := row.Scan(
+		&i.ID,
+		&i.Beginning,
+		&i.Ending,
+		&i.Title,
+	)
 	return i, err
 }
