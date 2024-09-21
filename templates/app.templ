@@ -5,13 +5,13 @@ import (
 	"github.com/invopop/ctxi18n/i18n"
 )
 
-templ Layout(contents templ.Component) {
+templ Layout(userName string, contents templ.Component) {
 	<!DOCTYPE html>
 	<html class="h-full" lang="de">
 		@Header()
 		<body class="flex flex-col justify-between h-full">
-			@Menu()
-			<main class="flex-grow">
+			@Menu(userName)
+			<main class="flex-grow px-2">
 				@contents
 			</main>
 			@Footer()
@@ -44,22 +44,29 @@ templ Footer() {
 	</footer>
 }
 
-templ Menu() {
+templ Menu(userName string) {
 	<div class="bg-indigo-900 text-white">
 		<nav class="max-w-6xl mx-auto px-4">
 			<div class="flex justify-between">
                 <!-- Logo or Brand -->
 				<div class="flex space-x-4">
-					<div class="neonText text-4xl py-3">
-						{ i18n.T(ctx, "rental") }
-					</div>
+					<a href="/">
+						<div class="neonText text-4xl py-3">
+							{ i18n.T(ctx, "rental") }
+						</div>
+					</a>
 				</div>
                 <!-- Primary Navbar items -->
                 <div class="hidden md:flex items-center space-x-1">
-                    <a href="/" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.home") }</a>
-                    <a href="/objects" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.objects") }</a>
-                    <a href="/holidays" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.holidays") }</a>
-                    <a href="/rentals" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.rentals") }</a>
+					if userName != "" {
+						<a href="/" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.home") }</a>
+						<a href="/objects" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.objects") }</a>
+						<a href="/holidays" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.holidays") }</a>
+						<a href="/rentals" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.rentals") }</a>
+						<a href="/auth/logout" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.logout") }</a>
+					} else {
+                    	<a href="/auth/login" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.login") }</a>
+					}
                 </div>
 				<!-- Mobile menu button -->
 				<div class="md:hidden flex items-center">
@@ -73,10 +80,15 @@ templ Menu() {
 		</nav>
 		<!-- Mobile Menu -->
 		<div class="mobile-menu hidden md:hidden">
-			<a href="/" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.home") }</a>
-			<a href="/objects" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.objects") }</a>
-			<a href="/holidays" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.holidays") }</a>
-			<a href="/rentals" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.rentals") }</a>
+			if userName != "" {
+				<a href="/" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.home") }</a>
+				<a href="/objects" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.objects") }</a>
+				<a href="/holidays" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.holidays") }</a>
+				<a href="/rentals" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.rentals") }</a>
+				<a href="/auth/logout" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.logout") }</a>
+			} else {
+				<a href="/auth/login" class="block py-2 px-4 text-sm hover:bg-blue-400">{ i18n.T(ctx, "menu.login") }</a>
+			}
 		</div>
 	</div>
 	<script>

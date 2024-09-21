@@ -1,7 +1,30 @@
 de:
   rental: "Vermietung"
   menu:
+    login: "Anmelden"
+    logout: "Abmelden"
     home: "Startseite"
     objects: "Objekte"
     holidays: "Urlaube"
     rentals: "Vermietungen"
+  auth:
+    email: "E-Mail"
+    password: "Passwort"
+    login: "Anmelden"
+  object:
+    objects: "Objekte"
+    newObject: "Neues Objekt"
+    name: "Name"
+    save: "Speichern"
+    deleteObject: "Objekt löschen"
+    deleteObjectDialog: "Soll das Objekt gelöscht werden?"
+  holiday:
+    holidays: "Urlaube"
+    newHoliday: "Neuer Urlaub"
+    editHoliday: "Urlaub bearbeiten"
+    description: "Beschreibung"
+    from: "Von"
+    to: "Bis"
+    save: "Speichern"
+    deleteHoliday: "Urlaub löschen"
+    deleteHolidayDialog: "Soll der Urlaub gelöscht werden?"

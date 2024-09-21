@@ -1,5 +1,5 @@
 -- name: GetRentals :many
-SELECT * FROM rentals;
+SELECT * FROM rentals ORDER BY "from";
 
 -- name: GetRentalById :one
 SELECT * FROM rentals WHERE id = $1;

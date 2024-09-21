@@ -3,8 +3,9 @@
 CREATE TABLE holidays
 (
     id SERIAL PRIMARY KEY,
-    "from" DATE NOT NULL,
-    "to"   DATE NOT NULL
+    beginning DATE NOT NULL,
+    ending   DATE NOT NULL,
+    title VARCHAR(255) NOT NULL
 );
 -- +goose StatementEnd
 

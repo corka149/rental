@@ -1,7 +1,30 @@
 en:
   rental: "Rental"
   menu:
+    login: "Login"
+    logout: "Logout"
     home: "Home"
     objects: "Objects"
     holidays: "Holidays"
     rentals: "Rentals"
+  auth:
+    email: "Email"
+    password: "Password"
+    login: "Login"
+  object:
+    objects: "Objects"
+    newObject: "New Object"
+    name: "Name"
+    save: "Save"
+    deleteObject: "Delete object"
+    deleteObjectDialog: "Should the object be deleted?"
+  holiday:
+    holidays: "Holidays"
+    newHoliday: "New Holiday"
+    editHoliday: "Edit Holiday"
+    description: "Description"
+    from: "From"
+    to: "To"
+    save: "Save"
+    deleteHoliday: "Delete holiday"
+    deleteHolidayDialog: "Should the holiday be deleted?"
