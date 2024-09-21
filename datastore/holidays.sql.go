@@ -95,16 +95,17 @@ func (q *Queries) GetHolidays(ctx context.Context) ([]Holiday, error) {
 }
 
 const getHolidaysInRange = `-- name: GetHolidaysInRange :many
-SELECT id, beginning, ending, title FROM holidays WHERE (beginning <= $1 AND $1 <= ending) OR (beginning <= $2 AND $2 <= ending) ORDER BY beginning
+SELECT id, beginning, ending, title FROM holidays WHERE ((beginning <= $1 AND $1 <= ending) OR (beginning <= $2 AND $2 <= ending)) AND id <> $3 ORDER BY beginning
 `
 
 type GetHolidaysInRangeParams struct {
 	Beginning pgtype.Date
 	Ending    pgtype.Date
+	Ignoreid  int32
 }
 
 func (q *Queries) GetHolidaysInRange(ctx context.Context, arg GetHolidaysInRangeParams) ([]Holiday, error) {
-	rows, err := q.db.Query(ctx, getHolidaysInRange, arg.Beginning, arg.Ending)
+	rows, err := q.db.Query(ctx, getHolidaysInRange, arg.Beginning, arg.Ending, arg.Ignoreid)
 	if err != nil {
 		return nil, err
 	}

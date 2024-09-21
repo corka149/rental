@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -61,6 +62,20 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing to date: %v", err)
+			c.Redirect(302, "/holidays")
+			c.Abort()
+			return
+		}
+
+		if ending.Before(beginning) {
+			log.Printf("Error: to date is before from date")
+			c.Redirect(302, "/holidays")
+			c.Abort()
+			return
+		}
+
+		if holidayConflicts(queries, c.Request.Context(), 0, beginning, ending) {
+			log.Printf("Error: holiday conflicts with existing holiday")
 			c.Redirect(302, "/holidays")
 			c.Abort()
 			return
@@ -145,6 +160,20 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
+		if ending.Before(beginning) {
+			log.Printf("Error: to date is before from date")
+			c.Redirect(302, "/holidays")
+			c.Abort()
+			return
+		}
+
+		if holidayConflicts(queries, c.Request.Context(), int32(id), beginning, ending) {
+			log.Printf("Error: holiday conflicts with existing holiday")
+			c.Redirect(302, "/holidays")
+			c.Abort()
+			return
+		}
+
 		holiday := datastore.UpdateHolidayParams{
 			ID:        int32(id),
 			Title:     title,
@@ -181,4 +210,21 @@ func deleteHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		c.Redirect(302, "/holidays")
 	}
+}
+
+func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) bool {
+	queryParams := datastore.GetHolidaysInRangeParams{
+		Beginning: pgtype.Date{Time: beginning, Valid: true},
+		Ending:    pgtype.Date{Time: ending, Valid: true},
+		Ignoreid:  excludeId,
+	}
+
+	holidays, err := queries.GetHolidaysInRange(ctx, queryParams)
+
+	if err != nil {
+		log.Printf("Error getting holidays in range: %v", err)
+		return true
+	}
+
+	return len(holidays) > 0
 }
