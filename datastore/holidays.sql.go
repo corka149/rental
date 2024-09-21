@@ -94,6 +94,40 @@ func (q *Queries) GetHolidays(ctx context.Context) ([]Holiday, error) {
 	return items, nil
 }
 
+const getHolidaysInRange = `-- name: GetHolidaysInRange :many
+SELECT id, beginning, ending, title FROM holidays WHERE (beginning <= $1 AND $1 <= ending) OR (beginning <= $2 AND $2 <= ending) ORDER BY beginning
+`
+
+type GetHolidaysInRangeParams struct {
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+}
+
+func (q *Queries) GetHolidaysInRange(ctx context.Context, arg GetHolidaysInRangeParams) ([]Holiday, error) {
+	rows, err := q.db.Query(ctx, getHolidaysInRange, arg.Beginning, arg.Ending)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Holiday
+	for rows.Next() {
+		var i Holiday
+		if err := rows.Scan(
+			&i.ID,
+			&i.Beginning,
+			&i.Ending,
+			&i.Title,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateHoliday = `-- name: UpdateHoliday :one
 UPDATE holidays SET beginning = $1, ending = $2, title = $3 WHERE id = $4 RETURNING id, beginning, ending, title
 `

@@ -12,3 +12,6 @@ UPDATE holidays SET beginning = $1, ending = $2, title = $3 WHERE id = $4 RETURN
 
 -- name: DeleteHoliday :one
 DELETE FROM holidays WHERE id = $1 RETURNING *;
+
+-- name: GetHolidaysInRange :many
+SELECT * FROM holidays WHERE (beginning <= sqlc.arg(beginning) AND sqlc.arg(beginning) <= ending) OR (beginning <= sqlc.arg(ending) AND sqlc.arg(ending) <= ending) ORDER BY beginning; 
