@@ -1,5 +1,5 @@
 en:
-  rental: "Rental"
+  rentalTitle: "Rental"
   menu:
     login: "Login"
     logout: "Logout"
@@ -28,6 +28,15 @@ en:
     save: "Save"
     deleteHoliday: "Delete holiday"
     deleteHolidayDialog: "Should the holiday be deleted?"
+  rental:
+    rentals: "Rentals"
+    newRental: "New Rental"
+    editRental: "Edit Rental"
+    from: "From"
+    to: "To"
+    save: "Save"
+    deleteRental: "Delete rental"
+    deleteRentalDialog: "Should the rental be deleted?"
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."

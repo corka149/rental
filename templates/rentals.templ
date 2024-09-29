@@ -1,0 +1,31 @@
+package templates
+
+import (
+	"github.com/invopop/ctxi18n/i18n"
+    "github.com/corka149/rental/datastore"
+	"fmt"
+)
+
+templ RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Object) {
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+		<h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "rental.rentals") }</h1>
+		<a href="/rentals/new" class="block w-40 mx-auto py-2 px-4 my-2 mx-4 bg-gray-300 text-white rounded-lg text-center">{ i18n.T(ctx, "rental.newRental") }</a>
+		<ul class="text-center">
+			for _, rental := range rentals {
+				<li class="max-w-sm mx-auto">
+					<a href={ templ.URL(fmt.Sprintf("/rentals/%d", rental.ID)) } class="block p-4 bg-gray-100 hover:bg-gray-200 rounded-lg">
+						{ rental.From.Time.Format("02.01.2006") } - { rental.To.Time.Format("02.01.2006") } { objName(objectsById, rental.ObjectID) })
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+func objName(objectsById map[int32]datastore.Object, id int32) string {
+    if obj, ok := objectsById[id]; ok {
+        return obj.Name
+    }
+
+    return fmt.Sprintf("Object %d", id)
+}

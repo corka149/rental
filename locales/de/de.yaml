@@ -1,5 +1,5 @@
 de:
-  rental: "Vermietung"
+  rentalTitle: "Vermietung"
   menu:
     login: "Anmelden"
     logout: "Abmelden"
@@ -28,6 +28,15 @@ de:
     save: "Speichern"
     deleteHoliday: "Urlaub löschen"
     deleteHolidayDialog: "Soll der Urlaub gelöscht werden?"
+  rental:
+    rentals: "Vermietungen"
+    newRental: "Neue Vermietung"
+    editRental: "Vermietung bearbeiten"
+    from: "Von"
+    to: "Bis"
+    save: "Speichern"
+    deleteRental: "Vermietung löschen"
+    deleteRentalDialog: "Soll die Vermietung gelöscht werden?"
   errors:
     # GENERAL
     unable_to_get_data: "Daten konnten nicht abgerufen werden."

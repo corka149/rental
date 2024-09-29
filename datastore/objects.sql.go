@@ -42,6 +42,30 @@ func (q *Queries) GetObjectById(ctx context.Context, id int32) (Object, error) {
 	return i, err
 }
 
+const getObjectByIds = `-- name: GetObjectByIds :many
+SELECT id, name FROM objects WHERE id = ANY($1::int[]) ORDER BY name
+`
+
+func (q *Queries) GetObjectByIds(ctx context.Context, ids []int32) ([]Object, error) {
+	rows, err := q.db.Query(ctx, getObjectByIds, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Object
+	for rows.Next() {
+		var i Object
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getObjects = `-- name: GetObjects :many
 SELECT id, name FROM objects ORDER BY name
 `

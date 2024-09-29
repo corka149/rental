@@ -24,24 +24,34 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	rLimiter := middleware.RateLimiter()
 
 	auth := router.Group("/auth")
+
 	auth.POST("/register", rLimiter, ba, register(queries))
 	auth.GET("/login", loginForm(queries))
 	auth.POST("/login", rLimiter, login(queries))
 	auth.GET("/logout", logout())
 
 	// ==================== OBJECT ====================
-	router.GET("/objects", indexObjects(queries))
-	router.GET("/objects/new", newObjectForm(queries))
-	router.POST("/objects/new", createObject(queries))
-	router.GET("/objects/:id", updateObjectForm(queries))
-	router.POST("/objects/:id", updateObject(queries))
-	router.POST("/objects/:id/delete", deleteObject(queries))
+	objects := router.Group("/objects", middleware.AuthCheck())
+
+	objects.GET("", indexObjects(queries))
+	objects.GET("/new", newObjectForm(queries))
+	objects.POST("/new", createObject(queries))
+	objects.GET("/:id", updateObjectForm(queries))
+	objects.POST("/:id", updateObject(queries))
+	objects.POST("/:id/delete", deleteObject(queries))
 
 	// ==================== HOLIDAY ====================
-	router.GET("/holidays", indexHolidays(queries))
-	router.GET("/holidays/new", newHolidayForm(queries))
-	router.POST("/holidays/new", createHoliday(queries))
-	router.GET("/holidays/:id", updateHolidayForm(queries))
-	router.POST("/holidays/:id", updateHoliday(queries))
-	router.POST("/holidays/:id/delete", deleteHoliday(queries))
+	holidays := router.Group("/holidays", middleware.AuthCheck())
+
+	holidays.GET("", indexHolidays(queries))
+	holidays.GET("/new", newHolidayForm(queries))
+	holidays.POST("/new", createHoliday(queries))
+	holidays.GET("/:id", updateHolidayForm(queries))
+	holidays.POST("/:id", updateHoliday(queries))
+	holidays.POST("/:id/delete", deleteHoliday(queries))
+
+	// ==================== RENTAL ====================
+	rentals := router.Group("/rentals", middleware.AuthCheck())
+
+	rentals.GET("", indexRentals(queries))
 }

@@ -1,13 +1,11 @@
 package middleware
 
 import (
-	"context"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-func AuthCheck(ctx context.Context) gin.HandlerFunc {
+func AuthCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 

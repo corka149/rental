@@ -12,3 +12,6 @@ UPDATE objects SET name = $1 WHERE id = $2 RETURNING *;
 
 -- name: DeleteObject :one
 DELETE FROM objects WHERE id = $1 RETURNING *;
+
+-- name: GetObjectByIds :many
+SELECT * FROM objects WHERE id = ANY(@ids::int[]) ORDER BY name;
