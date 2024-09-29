@@ -28,3 +28,8 @@ en:
     save: "Save"
     deleteHoliday: "Delete holiday"
     deleteHolidayDialog: "Should the holiday be deleted?"
+  errors:
+    # GENERAL
+    unable_to_get_data: "Unable to get data."
+    # HOLIDAY
+    holiday_conflicts_with_another: "The holiday conflicts with another holiday."

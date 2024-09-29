@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -45,6 +44,7 @@ func newHolidayForm(queries *datastore.Queries) gin.HandlerFunc {
 
 func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		user := getUserFromSession(c, queries)
 		beginningStr := c.PostForm("beginning")
 		endingStr := c.PostForm("ending")
 		title := c.PostForm("title")
@@ -74,10 +74,16 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		if holidayConflicts(queries, c.Request.Context(), 0, beginning, ending) {
+		if errCode := holidayConflicts(queries, c.Request.Context(), 0, beginning, ending); errCode != "" {
 			log.Printf("Error: holiday conflicts with existing holiday")
-			c.Redirect(302, "/holidays")
-			c.Abort()
+
+			holiday := datastore.Holiday{
+				Title:     title,
+				Beginning: pgtype.Date{Time: beginning, Valid: true},
+				Ending:    pgtype.Date{Time: ending, Valid: true},
+			}
+
+			templates.Layout(user.Name, templates.HolidayForm(holiday, "new", errCode)).Render(c.Request.Context(), c.Writer)
 			return
 		}
 
@@ -120,14 +126,13 @@ func updateHolidayForm(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		target := fmt.Sprintf("%d", holiday.ID)
-
-		templates.Layout(user.Name, templates.HolidayForm(holiday, target)).Render(c.Request.Context(), c.Writer)
+		templates.Layout(user.Name, templates.HolidayForm(holiday, idStr)).Render(c.Request.Context(), c.Writer)
 	}
 }
 
 func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		user := getUserFromSession(c, queries)
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
 
@@ -167,10 +172,16 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		if holidayConflicts(queries, c.Request.Context(), int32(id), beginning, ending) {
+		if errCode := holidayConflicts(queries, c.Request.Context(), int32(id), beginning, ending); errCode != "" {
 			log.Printf("Error: holiday conflicts with existing holiday")
-			c.Redirect(302, "/holidays")
-			c.Abort()
+
+			holiday := datastore.Holiday{
+				Title:     title,
+				Beginning: pgtype.Date{Time: beginning, Valid: true},
+				Ending:    pgtype.Date{Time: ending, Valid: true},
+			}
+
+			templates.Layout(user.Name, templates.HolidayForm(holiday, idStr, errCode)).Render(c.Request.Context(), c.Writer)
 			return
 		}
 
@@ -212,7 +223,7 @@ func deleteHoliday(queries *datastore.Queries) gin.HandlerFunc {
 	}
 }
 
-func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) bool {
+func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) templates.ErrorCode {
 	queryParams := datastore.GetHolidaysInRangeParams{
 		Beginning: pgtype.Date{Time: beginning, Valid: true},
 		Ending:    pgtype.Date{Time: ending, Valid: true},
@@ -223,8 +234,12 @@ func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId
 
 	if err != nil {
 		log.Printf("Error getting holidays in range: %v", err)
-		return true
+		return templates.ErrUnableToGetData
 	}
 
-	return len(holidays) > 0
+	if len(holidays) > 0 {
+		return templates.ErrHolidayConfictsWithAnother
+	}
+
+	return ""
 }

@@ -22,12 +22,21 @@ templ HolidayIndex(holidays []datastore.Holiday) {
 	</div>
 }
 
-templ HolidayForm(holiday datastore.Holiday, target string) {
+templ HolidayForm(holiday datastore.Holiday, target string, errorCodes... ErrorCode ) {
     <div class="max-w-md mx-auto">
         if target == "new" {
             <h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.newHoliday") }</h1>
         } else {
             <h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.editHoliday") }</h1>
+        }
+        if len(errorCodes) > 0 {
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <ul>
+                    for _, errCode := range errorCodes {
+                        <li>{ i18n.T(ctx, errCode.String()) }</li>
+                    }
+                </ul>
+            </div>
         }
         <form action={ templ.URL("/holidays/" + target) } method="post" class="space-y-4">
             <div>
