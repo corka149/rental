@@ -32,6 +32,7 @@ de:
     rentals: "Vermietungen"
     newRental: "Neue Vermietung"
     editRental: "Vermietung bearbeiten"
+    description: "Beschreibung"
     beginning: "Von"
     ending: "Bis"
     save: "Speichern"

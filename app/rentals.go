@@ -166,3 +166,161 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 		c.Redirect(302, "/rentals")
 	}
 }
+
+func updateRentalForm(queries *datastore.Queries) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := getUserFromSession(c, queries)
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+
+		if err != nil {
+			log.Printf("Error parsing rental id: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		rental, err := queries.GetRentalById(c.Request.Context(), int32(id))
+
+		if err != nil {
+			log.Printf("Error getting rental: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		objects, err := queries.GetObjects(c.Request.Context())
+
+		if err != nil {
+			log.Printf("Error getting objects: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		templates.Layout(user.Name, templates.RentalForm(rental, idStr, objects)).Render(c.Request.Context(), c.Writer)
+	}
+}
+
+func updateRental(queries *datastore.Queries) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := getUserFromSession(c, queries)
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+
+		if err != nil {
+			log.Printf("Error parsing rental id: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		beginningStr := c.PostForm("beginning")
+		toStr := c.PostForm("ending")
+		description := c.PostForm("description")
+		objectIDStr := c.PostForm("object")
+		objectID, err := strconv.Atoi(objectIDStr)
+
+		if err != nil {
+			log.Printf("Error parsing object id: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		beginning, err := time.Parse("2006-01-02", beginningStr)
+
+		if err != nil {
+			log.Printf("Error parsing beginning date: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		ending, err := time.Parse("2006-01-02", toStr)
+
+		if err != nil {
+			log.Printf("Error parsing to date: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		errCodes := make([]templates.ErrorCode, 0)
+
+		if errCode := endingConflicts(beginning, ending); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
+
+		if errCode := rentalConflictsByObject(queries, c.Request.Context(), int32(id), beginning, ending, int32(objectID)); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
+
+		if errCode := holidayConflicts(queries, c.Request.Context(), int32(id), beginning, ending); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
+
+		if len(errCodes) > 0 {
+			rental := datastore.Rental{
+				ID:          int32(id),
+				Beginning:   pgtype.Date{Time: beginning},
+				Ending:      pgtype.Date{Time: ending},
+				ObjectID:    int32(objectID),
+				Description: pgtype.Text{String: description},
+			}
+
+			objects, err := queries.GetObjects(c.Request.Context())
+
+			if err != nil {
+				log.Printf("Error getting objects: %v", err)
+				c.Redirect(302, "/rentals")
+				c.Abort()
+				return
+			}
+
+			templates.Layout(user.Name, templates.RentalForm(rental, idStr, objects, errCodes...)).Render(c.Request.Context(), c.Writer)
+			return
+		}
+
+		rental := datastore.UpdateRentalParams{
+			ID:          int32(id),
+			Beginning:   pgtype.Date{Time: beginning, Valid: true},
+			Ending:      pgtype.Date{Time: ending, Valid: true},
+			Description: pgtype.Text{String: description, Valid: true},
+			ObjectID:    int32(objectID),
+		}
+
+		_, err = queries.UpdateRental(c.Request.Context(), rental)
+
+		if err != nil {
+			log.Printf("Error updating rental: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		c.Redirect(302, "/rentals")
+	}
+}
+
+func deleteRental(queries *datastore.Queries) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+
+		if err != nil {
+			log.Printf("Error parsing rental id: %v", err)
+			c.Redirect(302, "/rentals")
+			c.Abort()
+			return
+		}
+
+		_, err = queries.DeleteRental(c.Request.Context(), int32(id))
+
+		if err != nil {
+			log.Printf("Error deleting rental: %v", err)
+		}
+
+		c.Redirect(302, "/rentals")
+	}
+}

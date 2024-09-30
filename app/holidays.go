@@ -81,7 +81,6 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 		}
 
 		if len(errCodes) > 0 {
-			log.Printf("Error: holiday conflicts with existing holiday")
 
 			holiday := datastore.Holiday{
 				Title:     title,
@@ -186,7 +185,6 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 		}
 
 		if len(errCodes) > 0 {
-			log.Printf("Error: holiday conflicts with existing holiday")
 
 			holiday := datastore.Holiday{
 				Title:     title,

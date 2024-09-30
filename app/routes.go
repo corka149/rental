@@ -56,4 +56,7 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	rentals.GET("", indexRentals(queries))
 	rentals.GET("/new", newRentalForm(queries))
 	rentals.POST("/new", createRental(queries))
+	rentals.GET("/:id", updateRentalForm(queries))
+	rentals.POST("/:id", updateRental(queries))
+	rentals.POST("/:id/delete", deleteRental(queries))
 }

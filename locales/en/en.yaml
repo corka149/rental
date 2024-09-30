@@ -32,6 +32,7 @@ en:
     rentals: "Rentals"
     newRental: "New Rental"
     editRental: "Edit Rental"
+    description: "Description"
     beginning: "From"
     ending: "To"
     save: "Save"
