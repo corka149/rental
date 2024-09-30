@@ -12,9 +12,9 @@ templ RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Ob
 		<a href="/rentals/new" class="block w-64 mx-auto py-2 px-4 my-2 mx-4 bg-gray-300 text-white rounded-lg text-center">{ i18n.T(ctx, "rental.newRental") }</a>
 		<ul class="text-center">
 			for _, rental := range rentals {
-				<li class="max-w-sm mx-auto">
+				<li class="max-w-sm mx-auto my-1">
 					<a href={ templ.URL(fmt.Sprintf("/rentals/%d", rental.ID)) } class="block p-4 bg-gray-100 hover:bg-gray-200 rounded-lg">
-						{ rental.From.Time.Format("02.01.2006") } - { rental.To.Time.Format("02.01.2006") } { objName(objectsById, rental.ObjectID) }
+						{ rental.Beginning.Time.Format("02.01.2006") } - { rental.Ending.Time.Format("02.01.2006") } { objName(objectsById, rental.ObjectID) }
 					</a>
 				</li>
 			}
@@ -42,19 +42,19 @@ templ RentalForm(rental datastore.Rental, target string, objects []datastore.Obj
         }
         
 		<form action={ templ.URL("/rentals/" + target) } method="post" class="space-y-4">
-			<!-- FROM -->
+			<!-- BEGINNING -->
 			<div>
-				<label for="from" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.from") }</label>
-				<input required type="date" name="from" id="from" class="mt-1 block
+				<label for="beginning" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.beginning") }</label>
+				<input required type="date" name="beginning" id="beginning" class="mt-1 block
 					w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-					value={ rental.From.Time.Format("2006-01-02") }/>
+					value={ rental.Beginning.Time.Format("2006-01-02") }/>
 			</div>
-			<!-- TO -->
+			<!-- ENDING -->
 			<div>
-				<label for="to" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.to") }</label>
-				<input required type="date" name="to" id="to" class="mt-1 block
+				<label for="ending" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.ending") }</label>
+				<input required type="date" name="ending" id="ending" class="mt-1 block
 					w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-					value={ rental.To.Time.Format("2006-01-02") }/>
+					value={ rental.Ending.Time.Format("2006-01-02") }/>
 			</div>
 			<!-- OBJECT -->
 			<div>

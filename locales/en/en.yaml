@@ -23,8 +23,8 @@ en:
     newHoliday: "New Holiday"
     editHoliday: "Edit Holiday"
     description: "Description"
-    from: "From"
-    to: "To"
+    beginning: "From"
+    ending: "To"
     save: "Save"
     deleteHoliday: "Delete holiday"
     deleteHolidayDialog: "Should the holiday be deleted?"
@@ -32,8 +32,8 @@ en:
     rentals: "Rentals"
     newRental: "New Rental"
     editRental: "Edit Rental"
-    from: "From"
-    to: "To"
+    beginning: "From"
+    ending: "To"
     save: "Save"
     deleteRental: "Delete rental"
     deleteRentalDialog: "Should the rental be deleted?"
@@ -41,6 +41,7 @@ en:
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."
+    ending_before_beginning: "The end date is before the start date."
     # HOLIDAY
     conflicts_with_holiday: "There is a conflict with a holiday."
     # RENTAL

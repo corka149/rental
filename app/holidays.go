@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"log"
 	"strconv"
 	"time"
@@ -67,14 +66,11 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		if ending.Before(beginning) {
-			log.Printf("Error: to date is before from date")
-			c.Redirect(302, "/holidays")
-			c.Abort()
-			return
-		}
-
 		errCodes := make([]templates.ErrorCode, 0)
+
+		if errCode := endingConflicts(beginning, ending); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
 
 		if errCode := rentalConflicts(queries, c.Request.Context(), 0, beginning, ending); errCode != "" {
 			errCodes = append(errCodes, errCode)
@@ -175,14 +171,11 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		if ending.Before(beginning) {
-			log.Printf("Error: to date is before from date")
-			c.Redirect(302, "/holidays")
-			c.Abort()
-			return
-		}
-
 		errCodes := make([]templates.ErrorCode, 0)
+
+		if errCode := endingConflicts(beginning, ending); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
 
 		if errCode := rentalConflicts(queries, c.Request.Context(), 0, beginning, ending); errCode != "" {
 			errCodes = append(errCodes, errCode)
@@ -241,25 +234,4 @@ func deleteHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		c.Redirect(302, "/holidays")
 	}
-}
-
-func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) templates.ErrorCode {
-	queryParams := datastore.GetHolidaysInRangeParams{
-		Beginning: pgtype.Date{Time: beginning, Valid: true},
-		Ending:    pgtype.Date{Time: ending, Valid: true},
-		Ignoreid:  excludeId,
-	}
-
-	holidays, err := queries.GetHolidaysInRange(ctx, queryParams)
-
-	if err != nil {
-		log.Printf("Error getting holidays in range: %v", err)
-		return templates.ErrUnableToGetData
-	}
-
-	if len(holidays) > 0 {
-		return templates.ErrConflictsWithHoliday
-	}
-
-	return ""
 }

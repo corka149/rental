@@ -4,8 +4,8 @@ CREATE TABLE rentals
 (
     id SERIAL PRIMARY KEY,
     "object_id"   INTEGER NOT NULL,
-    "from"        DATE    NOT NULL,
-    "to"          DATE    NOT NULL,
+    "beginning"        DATE    NOT NULL,
+    "ending"          DATE    NOT NULL,
     "description" TEXT,
     FOREIGN KEY (object_id) REFERENCES objects (id)
 );

@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"log"
 	"slices"
 	"strconv"
@@ -62,8 +61,8 @@ func newRentalForm(queries *datastore.Queries) gin.HandlerFunc {
 		}
 
 		rental := datastore.Rental{
-			From: now,
-			To:   now,
+			Beginning: now,
+			Ending:    now,
 		}
 
 		objects, err := queries.GetObjects(c.Request.Context())
@@ -82,8 +81,8 @@ func newRentalForm(queries *datastore.Queries) gin.HandlerFunc {
 func createRental(queries *datastore.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := getUserFromSession(c, queries)
-		fromStr := c.PostForm("from")
-		toStr := c.PostForm("to")
+		beginningStr := c.PostForm("beginning")
+		toStr := c.PostForm("ending")
 		description := c.PostForm("description")
 		objectIDStr := c.PostForm("object")
 		objectID, err := strconv.Atoi(objectIDStr)
@@ -95,16 +94,16 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		from, err := time.Parse("2006-01-02", fromStr)
+		beginning, err := time.Parse("2006-01-02", beginningStr)
 
 		if err != nil {
-			log.Printf("Error parsing from date: %v", err)
+			log.Printf("Error parsing beginning date: %v", err)
 			c.Redirect(302, "/rentals")
 			c.Abort()
 			return
 		}
 
-		to, err := time.Parse("2006-01-02", toStr)
+		ending, err := time.Parse("2006-01-02", toStr)
 
 		if err != nil {
 			log.Printf("Error parsing to date: %v", err)
@@ -115,18 +114,22 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 
 		errCodes := make([]templates.ErrorCode, 0)
 
-		if errCode := rentalConflictsByObject(queries, c.Request.Context(), 0, from, to, int32(objectID)); errCode != "" {
+		if errCode := rentalConflictsByObject(queries, c.Request.Context(), 0, beginning, ending, int32(objectID)); errCode != "" {
 			errCodes = append(errCodes, errCode)
 		}
 
-		if errCode := holidayConflicts(queries, c.Request.Context(), 0, from, to); errCode != "" {
+		if errCode := holidayConflicts(queries, c.Request.Context(), 0, beginning, ending); errCode != "" {
+			errCodes = append(errCodes, errCode)
+		}
+
+		if errCode := endingConflicts(beginning, ending); errCode != "" {
 			errCodes = append(errCodes, errCode)
 		}
 
 		if len(errCodes) > 0 {
 			rental := datastore.Rental{
-				From:        pgtype.Date{Time: from},
-				To:          pgtype.Date{Time: to},
+				Beginning:   pgtype.Date{Time: beginning},
+				Ending:      pgtype.Date{Time: ending},
 				ObjectID:    int32(objectID),
 				Description: pgtype.Text{String: description},
 			}
@@ -145,8 +148,8 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 		}
 
 		rental := datastore.CreateRentalParams{
-			From:        pgtype.Date{Time: from, Valid: true},
-			To:          pgtype.Date{Time: to, Valid: true},
+			Beginning:   pgtype.Date{Time: beginning, Valid: true},
+			Ending:      pgtype.Date{Time: ending, Valid: true},
 			Description: pgtype.Text{String: description, Valid: true},
 			ObjectID:    int32(objectID),
 		}
@@ -162,47 +165,4 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 
 		c.Redirect(302, "/rentals")
 	}
-}
-
-func rentalConflictsByObject(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time, objectId int32) templates.ErrorCode {
-	queryParam := datastore.GetRentalsInRangeByObjectParams{
-		From:    pgtype.Date{Time: beginning, Valid: true},
-		From_2:  pgtype.Date{Time: ending, Valid: true},
-		ID:      excludeId,
-		Column4: objectId,
-	}
-
-	rentals, err := queries.GetRentalsInRangeByObject(ctx, queryParam)
-
-	if err != nil {
-		log.Printf("Error getting rentals: %v", err)
-		return templates.ErrUnableToGetData
-	}
-
-	if len(rentals) > 0 {
-		return templates.ErrConflictsWithRental
-	}
-
-	return ""
-}
-
-func rentalConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) templates.ErrorCode {
-	queryParam := datastore.GetRentalsInRangeAllObjectParams{
-		From:   pgtype.Date{Time: beginning, Valid: true},
-		From_2: pgtype.Date{Time: ending, Valid: true},
-		ID:     excludeId,
-	}
-
-	rentals, err := queries.GetRentalsInRangeAllObject(ctx, queryParam)
-
-	if err != nil {
-		log.Printf("Error getting rentals: %v", err)
-		return templates.ErrUnableToGetData
-	}
-
-	if len(rentals) > 0 {
-		return templates.ErrConflictsWithRental
-	}
-
-	return ""
 }

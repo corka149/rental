@@ -66,7 +66,7 @@ func HolidayIndex(holidays []datastore.Holiday) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, holiday := range holidays {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto\"><a href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto my-1\"><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -249,9 +249,9 @@ func HolidayForm(holiday datastore.Holiday, target string, errorCodes ...ErrorCo
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "holiday.from"))
+		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "holiday.beginning"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/holidays.templ`, Line: 50, Col: 116}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/holidays.templ`, Line: 50, Col: 121}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -275,9 +275,9 @@ func HolidayForm(holiday datastore.Holiday, target string, errorCodes ...ErrorCo
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
-		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "holiday.to"))
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "holiday.ending"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/holidays.templ`, Line: 54, Col: 111}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/holidays.templ`, Line: 54, Col: 115}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {

@@ -66,7 +66,7 @@ func ObjectIndex(objects []datastore.Object) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, object := range objects {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto\"><a href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto my-1\"><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

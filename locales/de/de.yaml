@@ -23,8 +23,8 @@ de:
     newHoliday: "Neuer Urlaub"
     editHoliday: "Urlaub bearbeiten"
     description: "Beschreibung"
-    from: "Von"
-    to: "Bis"
+    beginning: "Von"
+    ending: "Bis"
     save: "Speichern"
     deleteHoliday: "Urlaub löschen"
     deleteHolidayDialog: "Soll der Urlaub gelöscht werden?"
@@ -32,8 +32,8 @@ de:
     rentals: "Vermietungen"
     newRental: "Neue Vermietung"
     editRental: "Vermietung bearbeiten"
-    from: "Von"
-    to: "Bis"
+    beginning: "Von"
+    ending: "Bis"
     save: "Speichern"
     deleteRental: "Vermietung löschen"
     deleteRentalDialog: "Soll die Vermietung gelöscht werden?"
@@ -41,6 +41,7 @@ de:
   errors:
     # GENERAL
     unable_to_get_data: "Daten konnten nicht abgerufen werden."
+    ending_before_beginning: "Das Enddatum liegt vor dem Startdatum."
     # HOLIDAY
     conflicts_with_holiday: "Es gibt eine Überschneidung mit einem Urlaub."
     # RENTAL

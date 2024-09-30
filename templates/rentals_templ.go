@@ -66,7 +66,7 @@ func RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Obj
 			return templ_7745c5c3_Err
 		}
 		for _, rental := range rentals {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto\"><a href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"max-w-sm mx-auto my-1\"><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -80,9 +80,9 @@ func RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Obj
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(rental.From.Time.Format("02.01.2006"))
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(rental.Beginning.Time.Format("02.01.2006"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -93,9 +93,9 @@ func RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Obj
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(rental.To.Time.Format("02.01.2006"))
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(rental.Ending.Time.Format("02.01.2006"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 96}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -108,7 +108,7 @@ func RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Obj
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(objName(objectsById, rental.ObjectID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 129}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 17, Col: 138}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -231,53 +231,53 @@ func RentalForm(rental datastore.Rental, target string, objects []datastore.Obje
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" method=\"post\" class=\"space-y-4\"><!-- FROM --><div><label for=\"from\" class=\"block text-sm font-medium text-gray-700\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" method=\"post\" class=\"space-y-4\"><!-- BEGINNING --><div><label for=\"beginning\" class=\"block text-sm font-medium text-gray-700\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
-		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "rental.from"))
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "rental.beginning"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 47, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 47, Col: 108}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input required type=\"date\" name=\"from\" id=\"from\" class=\"mt-1 block\n\t\t\t\t\tw-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input required type=\"date\" name=\"beginning\" id=\"beginning\" class=\"mt-1 block\n\t\t\t\t\tw-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(rental.From.Time.Format("2006-01-02"))
+		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(rental.Beginning.Time.Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 50, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 50, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><!-- TO --><div><label for=\"to\" class=\"block text-sm font-medium text-gray-700\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div><!-- ENDING --><div><label for=\"ending\" class=\"block text-sm font-medium text-gray-700\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "rental.to"))
+		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "rental.ending"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 54, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 54, Col: 102}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input required type=\"date\" name=\"to\" id=\"to\" class=\"mt-1 block\n\t\t\t\t\tw-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label> <input required type=\"date\" name=\"ending\" id=\"ending\" class=\"mt-1 block\n\t\t\t\t\tw-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
-		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(rental.To.Time.Format("2006-01-02"))
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(rental.Ending.Time.Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 57, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/rentals.templ`, Line: 57, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
