@@ -37,8 +37,11 @@ en:
     save: "Save"
     deleteRental: "Delete rental"
     deleteRentalDialog: "Should the rental be deleted?"
+    object: "Object"
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."
     # HOLIDAY
-    holiday_conflicts_with_another: "The holiday conflicts with another holiday."
+    conflicts_with_holiday: "There is a conflict with a holiday."
+    # RENTAL
+    conflicts_with_rental: "There is a conflict with a rental."

@@ -29,6 +29,8 @@ templ HolidayForm(holiday datastore.Holiday, target string, errorCodes... ErrorC
         } else {
             <h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "holiday.editHoliday") }</h1>
         }
+
+        <!-- Error messages -->
         if len(errorCodes) > 0 {
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <ul>
@@ -38,6 +40,7 @@ templ HolidayForm(holiday datastore.Holiday, target string, errorCodes... ErrorC
                 </ul>
             </div>
         }
+        
         <form action={ templ.URL("/holidays/" + target) } method="post" class="space-y-4">
             <div>
 				<label for="title" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "holiday.description") }</label>

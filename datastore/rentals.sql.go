@@ -40,6 +40,23 @@ func (q *Queries) CreateRental(ctx context.Context, arg CreateRentalParams) (Ren
 	return i, err
 }
 
+const deleteRental = `-- name: DeleteRental :one
+DELETE FROM rentals WHERE id = $1 RETURNING id, object_id, "from", "to", description
+`
+
+func (q *Queries) DeleteRental(ctx context.Context, id int32) (Rental, error) {
+	row := q.db.QueryRow(ctx, deleteRental, id)
+	var i Rental
+	err := row.Scan(
+		&i.ID,
+		&i.ObjectID,
+		&i.From,
+		&i.To,
+		&i.Description,
+	)
+	return i, err
+}
+
 const getRentalById = `-- name: GetRentalById :one
 SELECT id, object_id, "from", "to", description FROM rentals WHERE id = $1
 `
@@ -63,6 +80,84 @@ SELECT id, object_id, "from", "to", description FROM rentals ORDER BY "from"
 
 func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 	rows, err := q.db.Query(ctx, getRentals)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rental
+	for rows.Next() {
+		var i Rental
+		if err := rows.Scan(
+			&i.ID,
+			&i.ObjectID,
+			&i.From,
+			&i.To,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRentalsInRangeAllObject = `-- name: GetRentalsInRangeAllObject :many
+SELECT id, object_id, "from", "to", description FROM rentals WHERE (("from" <= $1 AND $1 <= "to") OR ("from" <= $2 AND $2 <= "to")) AND id <> $3 ORDER BY "from"
+`
+
+type GetRentalsInRangeAllObjectParams struct {
+	From   pgtype.Date
+	From_2 pgtype.Date
+	ID     int32
+}
+
+func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentalsInRangeAllObjectParams) ([]Rental, error) {
+	rows, err := q.db.Query(ctx, getRentalsInRangeAllObject, arg.From, arg.From_2, arg.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rental
+	for rows.Next() {
+		var i Rental
+		if err := rows.Scan(
+			&i.ID,
+			&i.ObjectID,
+			&i.From,
+			&i.To,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRentalsInRangeByObject = `-- name: GetRentalsInRangeByObject :many
+SELECT id, object_id, "from", "to", description FROM rentals WHERE (("from" <= $1 AND $1 <= "to") OR ("from" <= $2 AND $2 <= "to")) AND id <> $3 AND object_id = $4::int ORDER BY "from"
+`
+
+type GetRentalsInRangeByObjectParams struct {
+	From    pgtype.Date
+	From_2  pgtype.Date
+	ID      int32
+	Column4 int32
+}
+
+func (q *Queries) GetRentalsInRangeByObject(ctx context.Context, arg GetRentalsInRangeByObjectParams) ([]Rental, error) {
+	rows, err := q.db.Query(ctx, getRentalsInRangeByObject,
+		arg.From,
+		arg.From_2,
+		arg.ID,
+		arg.Column4,
+	)
 	if err != nil {
 		return nil, err
 	}

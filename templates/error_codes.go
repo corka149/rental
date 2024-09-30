@@ -9,7 +9,10 @@ const (
 	ErrUnableToGetData ErrorCode = "unable_to_get_data"
 
 	// Holiday
-	ErrHolidayConfictsWithAnother ErrorCode = "holiday_conflicts_with_another"
+	ErrConflictsWithHoliday ErrorCode = "conflicts_with_holiday"
+
+	// Rental
+	ErrConflictsWithRental ErrorCode = "conflicts_with_rental"
 )
 
 func (e ErrorCode) String() string {

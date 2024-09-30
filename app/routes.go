@@ -54,4 +54,6 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	rentals := router.Group("/rentals", middleware.AuthCheck())
 
 	rentals.GET("", indexRentals(queries))
+	rentals.GET("/new", newRentalForm(queries))
+	rentals.POST("/new", createRental(queries))
 }
