@@ -23,8 +23,8 @@ type Object struct {
 type Rental struct {
 	ID          int32
 	ObjectID    int32
-	From        pgtype.Date
-	To          pgtype.Date
+	Beginning   pgtype.Date
+	Ending      pgtype.Date
 	Description pgtype.Text
 }
 

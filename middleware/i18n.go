@@ -9,7 +9,6 @@ import (
 )
 
 func NewI18n() gin.HandlerFunc {
-
 	return func(c *gin.Context) {
 		lang := cmp.Or(c.Query("lang"), c.GetHeader("Accept-Language"), "en")
 

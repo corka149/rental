@@ -12,36 +12,53 @@ import (
 )
 
 const createRental = `-- name: CreateRental :one
-INSERT INTO rentals ("object_id", "from", "to", "description") VALUES ($1, $2, $3, $4) RETURNING id, object_id, "from", "to", description
+INSERT INTO rentals ("object_id", "beginning", "ending", "description") VALUES ($1, $2, $3, $4) RETURNING id, object_id, beginning, ending, description
 `
 
 type CreateRentalParams struct {
 	ObjectID    int32
-	From        pgtype.Date
-	To          pgtype.Date
+	Beginning   pgtype.Date
+	Ending      pgtype.Date
 	Description pgtype.Text
 }
 
 func (q *Queries) CreateRental(ctx context.Context, arg CreateRentalParams) (Rental, error) {
 	row := q.db.QueryRow(ctx, createRental,
 		arg.ObjectID,
-		arg.From,
-		arg.To,
+		arg.Beginning,
+		arg.Ending,
 		arg.Description,
 	)
 	var i Rental
 	err := row.Scan(
 		&i.ID,
 		&i.ObjectID,
-		&i.From,
-		&i.To,
+		&i.Beginning,
+		&i.Ending,
+		&i.Description,
+	)
+	return i, err
+}
+
+const deleteRental = `-- name: DeleteRental :one
+DELETE FROM rentals WHERE id = $1 RETURNING id, object_id, beginning, ending, description
+`
+
+func (q *Queries) DeleteRental(ctx context.Context, id int32) (Rental, error) {
+	row := q.db.QueryRow(ctx, deleteRental, id)
+	var i Rental
+	err := row.Scan(
+		&i.ID,
+		&i.ObjectID,
+		&i.Beginning,
+		&i.Ending,
 		&i.Description,
 	)
 	return i, err
 }
 
 const getRentalById = `-- name: GetRentalById :one
-SELECT id, object_id, "from", "to", description FROM rentals WHERE id = $1
+SELECT id, object_id, beginning, ending, description FROM rentals WHERE id = $1
 `
 
 func (q *Queries) GetRentalById(ctx context.Context, id int32) (Rental, error) {
@@ -50,15 +67,15 @@ func (q *Queries) GetRentalById(ctx context.Context, id int32) (Rental, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.ObjectID,
-		&i.From,
-		&i.To,
+		&i.Beginning,
+		&i.Ending,
 		&i.Description,
 	)
 	return i, err
 }
 
 const getRentals = `-- name: GetRentals :many
-SELECT id, object_id, "from", "to", description FROM rentals ORDER BY "from"
+SELECT id, object_id, beginning, ending, description FROM rentals ORDER BY "beginning"
 `
 
 func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
@@ -73,8 +90,86 @@ func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.ObjectID,
-			&i.From,
-			&i.To,
+			&i.Beginning,
+			&i.Ending,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRentalsInRangeAllObject = `-- name: GetRentalsInRangeAllObject :many
+SELECT id, object_id, beginning, ending, description FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 ORDER BY "beginning"
+`
+
+type GetRentalsInRangeAllObjectParams struct {
+	Beginning   pgtype.Date
+	Beginning_2 pgtype.Date
+	ID          int32
+}
+
+func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentalsInRangeAllObjectParams) ([]Rental, error) {
+	rows, err := q.db.Query(ctx, getRentalsInRangeAllObject, arg.Beginning, arg.Beginning_2, arg.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rental
+	for rows.Next() {
+		var i Rental
+		if err := rows.Scan(
+			&i.ID,
+			&i.ObjectID,
+			&i.Beginning,
+			&i.Ending,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRentalsInRangeByObject = `-- name: GetRentalsInRangeByObject :many
+SELECT id, object_id, beginning, ending, description FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 AND object_id = $4::int ORDER BY "beginning"
+`
+
+type GetRentalsInRangeByObjectParams struct {
+	Beginning   pgtype.Date
+	Beginning_2 pgtype.Date
+	ID          int32
+	Column4     int32
+}
+
+func (q *Queries) GetRentalsInRangeByObject(ctx context.Context, arg GetRentalsInRangeByObjectParams) ([]Rental, error) {
+	rows, err := q.db.Query(ctx, getRentalsInRangeByObject,
+		arg.Beginning,
+		arg.Beginning_2,
+		arg.ID,
+		arg.Column4,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rental
+	for rows.Next() {
+		var i Rental
+		if err := rows.Scan(
+			&i.ID,
+			&i.ObjectID,
+			&i.Beginning,
+			&i.Ending,
 			&i.Description,
 		); err != nil {
 			return nil, err
@@ -88,13 +183,13 @@ func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 }
 
 const updateRental = `-- name: UpdateRental :one
-UPDATE rentals SET "object_id" = $1, "from" = $2, "to" = $3, "description" = $4 WHERE id = $5 RETURNING id, object_id, "from", "to", description
+UPDATE rentals SET "object_id" = $1, "beginning" = $2, "ending" = $3, "description" = $4 WHERE id = $5 RETURNING id, object_id, beginning, ending, description
 `
 
 type UpdateRentalParams struct {
 	ObjectID    int32
-	From        pgtype.Date
-	To          pgtype.Date
+	Beginning   pgtype.Date
+	Ending      pgtype.Date
 	Description pgtype.Text
 	ID          int32
 }
@@ -102,8 +197,8 @@ type UpdateRentalParams struct {
 func (q *Queries) UpdateRental(ctx context.Context, arg UpdateRentalParams) (Rental, error) {
 	row := q.db.QueryRow(ctx, updateRental,
 		arg.ObjectID,
-		arg.From,
-		arg.To,
+		arg.Beginning,
+		arg.Ending,
 		arg.Description,
 		arg.ID,
 	)
@@ -111,8 +206,8 @@ func (q *Queries) UpdateRental(ctx context.Context, arg UpdateRentalParams) (Ren
 	err := row.Scan(
 		&i.ID,
 		&i.ObjectID,
-		&i.From,
-		&i.To,
+		&i.Beginning,
+		&i.Ending,
 		&i.Description,
 	)
 	return i, err
