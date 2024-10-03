@@ -39,6 +39,8 @@ en:
     deleteRental: "Delete rental"
     deleteRentalDialog: "Should the rental be deleted?"
     object: "Object"
+  calendar:
+    selectOne: "Please select"
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."

@@ -1,6 +1,13 @@
 package templates
 
-templ CalendarIndex(locale string) {
+import (
+    "fmt"
+
+	"github.com/invopop/ctxi18n/i18n"
+    "github.com/corka149/rental/datastore"
+)
+
+templ CalendarIndex(locale string, objects []datastore.Object) {
     <!DOCTYPE html>
 	<html class="h-full" lang={ locale }>
 
@@ -13,8 +20,25 @@ templ CalendarIndex(locale string) {
 
         </head>
         
-        <body>
-            <div id="calendar"></div>
+        <body class="flex flex-col justify-between">
+
+            <div class="max-w-md mx-auto">
+                <!-- OBJECT -->
+                <div class="py-2">
+                    <label for="object" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "calendar.selectOne") }</label>
+                    <select required name="object" id="object" class="mt-1 block
+                        w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        for _, obj := range objects {
+                            <option value={ fmt.Sprintf("%d", obj.ID) } >{ obj.Name }</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- CALENDAR -->
+                <div class="py-2">
+                    <div id="calendar"></div>
+                </div>
+            </div>
 
             <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>        
 			<script src="/static/js/calendar.js"></script>

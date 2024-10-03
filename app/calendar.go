@@ -2,6 +2,7 @@ package app
 
 import (
 	"cmp"
+	"log"
 	"strconv"
 	"time"
 
@@ -16,13 +17,20 @@ type CalendarEntry struct {
 	OccursOn time.Time `json:"occurs_on"`
 }
 
-func indexCalendar() gin.HandlerFunc {
+func indexCalendar(queries *datastore.Queries) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		locale := ctxi18n.Locale(c.Request.Context())
 
 		lang := cmp.Or(locale.Code().String(), "en")
 
-		templates.CalendarIndex(lang).Render(c.Request.Context(), c.Writer)
+		objects, err := queries.GetObjects(c.Request.Context())
+
+		if err != nil {
+			log.Printf("Error fetching objects: %v", err)
+			objects = []datastore.Object{}
+		}
+
+		templates.CalendarIndex(lang, objects).Render(c.Request.Context(), c.Writer)
 	}
 }
 

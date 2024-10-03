@@ -39,6 +39,8 @@ de:
     deleteRental: "Vermietung löschen"
     deleteRentalDialog: "Soll die Vermietung gelöscht werden?"
     object: "Objekt"
+  calendar:
+    selectOne: "Bitte wählen"
   errors:
     # GENERAL
     unable_to_get_data: "Daten konnten nicht abgerufen werden."

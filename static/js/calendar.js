@@ -139,15 +139,33 @@ const controller = {
 
     await this.getEntries(month, year);
 
-    new AirDatepicker("#calendar", {
+    this.calendar = new AirDatepicker("#calendar", {
       inline: true,
       locale: locale,
       onChangeViewDate: this.onChangeViewDate.bind(this),
       onRenderCell: this.onRenderCell.bind(this),
     });
   },
+  registerForObjectSelect: function() {
+    var objectSelect = document.getElementById("object");
+
+    this.currentObject = objectSelect.value;
+
+    objectSelect.addEventListener("change", async (event) => {
+      if (this.currentObject !== event.target.value) {
+        this.currentObject = event.target.value;
+
+        if (this.calendar) {
+          this.calendar.destroy();
+        }
+
+        this.newCalendar();
+      }
+    });
+  },
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
+  controller.registerForObjectSelect();
   controller.newCalendar();
 });

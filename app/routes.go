@@ -61,6 +61,6 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	rentals.POST("/:id/delete", deleteRental(queries))
 
 	// ==================== CALENDAR ====================
-	router.GET("/calendar", indexCalendar())
+	router.GET("/calendar", indexCalendar(queries))
 	router.GET("/calendar/search", searchCalendar(queries))
 }
