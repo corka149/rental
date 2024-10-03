@@ -23,6 +23,7 @@ templ CalendarIndex(locale string, objects []datastore.Object) {
         <body class="flex flex-col justify-between">
 
             <div class="max-w-md mx-auto">
+                <h1 class="text-3xl font-bold text-center">{ i18n.T(ctx, "calendar.title") }</h1>
                 <!-- OBJECT -->
                 <div class="py-2">
                     <label for="object" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "calendar.selectOne") }</label>

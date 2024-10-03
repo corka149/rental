@@ -97,6 +97,9 @@ const controller = {
   currentObject: null,
   entries: [],
   getEntries: async function (month, year) {
+
+    month = month + 1;
+    
     const searchParams = new URLSearchParams({
       month: month,
       year: year,
@@ -134,7 +137,7 @@ const controller = {
     const locale = locales[lang] ?? locales.en;
 
     const now = new Date();
-    const month = now.getMonth() + 1;
+    const month = now.getMonth();
     const year = now.getFullYear();
 
     await this.getEntries(month, year);
