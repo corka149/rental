@@ -5,12 +5,16 @@
 // DB_URL: The URL for the database. Default is "postgres://myadmin:mypassword@localhost:5432/rental_db".
 // PORT: The port for the application. Default is "8081".
 // SECRET: The secret for the application. Default is "secret".
+// MODE: The mode for the application. Default is "DEV" which logs and returns extra details.
 package rental
 
 import (
 	"cmp"
 	"context"
+	"log"
+	"os"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -31,9 +35,26 @@ const (
 )
 
 func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
+	mode := cmp.Or(getenv("MODE"), "DEV")
+
+	if mode == "DEV" {
+		log.Printf("!!! Running in development mode !!!\n")
+	}
+
 	dbUrl := cmp.Or(getenv("DB_URL"), defaultDbURL)
 
-	dbpool, err := pgxpool.New(ctx, dbUrl)
+	dbConfig, err := pgxpool.ParseConfig(dbUrl)
+	if err != nil {
+		log.Printf("Unable to parse database URL: %v\n", err)
+		return nil, err
+	}
+
+	if mode == "DEV" {
+		logger := log.New(os.Stdout, "rental", log.LstdFlags)
+		dbConfig.ConnConfig.Tracer = &rentalQueryTracer{log: logger}
+	}
+
+	dbpool, err := pgxpool.NewWithConfig(ctx, dbConfig)
 
 	if err != nil {
 		return nil, err
@@ -51,4 +72,20 @@ func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
 		Port:              port,
 		Secret:            secret,
 	}, nil
+}
+
+type rentalQueryTracer struct {
+	log *log.Logger
+}
+
+func (tracer *rentalQueryTracer) TraceQueryStart(
+	ctx context.Context,
+	_ *pgx.Conn,
+	data pgx.TraceQueryStartData) context.Context {
+	tracer.log.Printf("Executing command '%s' (with '%s')", data.SQL, data.Args)
+
+	return ctx
+}
+
+func (tracer *rentalQueryTracer) TraceQueryEnd(ctx context.Context, conn *pgx.Conn, data pgx.TraceQueryEndData) {
 }
