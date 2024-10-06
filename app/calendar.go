@@ -70,19 +70,45 @@ func searchCalendar(queries *datastore.Queries) gin.HandlerFunc {
 			Ignoreid:  0,
 		}
 
-		entries, err := queries.GetRentalsInRangeByObject(c.Request.Context(), params)
+		rentals, err := queries.GetRentalsInRangeByObject(c.Request.Context(), params)
 
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
 
-		entriesData := make([]CalendarEntry, 0, len(entries))
+		entriesData := make([]CalendarEntry, 0)
 
-		for _, entry := range entries {
+		for _, entry := range rentals {
 			occursOn := entry.Beginning.Time
 
 			entriesData = append(entriesData, CalendarEntry{OccursOn: occursOn})
+			occursOn = occursOn.AddDate(0, 0, 1)
+
+			for occursOn.Before(entry.Ending.Time) {
+				entriesData = append(entriesData, CalendarEntry{OccursOn: occursOn})
+				occursOn = occursOn.AddDate(0, 0, 1)
+			}
+		}
+
+		holidayParams := datastore.GetHolidaysInRangeParams{
+			Beginning: pgtype.Date{Time: beginning, Valid: true},
+			Ending:    pgtype.Date{Time: ending, Valid: true},
+			Ignoreid:  0,
+		}
+
+		holidays, err := queries.GetHolidaysInRange(c.Request.Context(), holidayParams)
+
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, entry := range holidays {
+			occursOn := entry.Beginning.Time
+
+			entriesData = append(entriesData, CalendarEntry{OccursOn: occursOn})
+
 			occursOn = occursOn.AddDate(0, 0, 1)
 
 			for occursOn.Before(entry.Ending.Time) {

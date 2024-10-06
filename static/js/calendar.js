@@ -120,6 +120,10 @@ const controller = {
       let notAvailable = false;
 
       for (const entry of this.entries) {
+        if (notAvailable) {
+          break;
+        }
+
         notAvailable = 
           (date.getFullYear() === entry.getFullYear() &&
           date.getMonth() === entry.getMonth() &&
