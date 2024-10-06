@@ -105,17 +105,17 @@ func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 }
 
 const getRentalsInRangeAllObject = `-- name: GetRentalsInRangeAllObject :many
-SELECT id, object_id, beginning, ending, description FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 ORDER BY "beginning"
+SELECT id, object_id, beginning, ending, description FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 ORDER BY beginning
 `
 
 type GetRentalsInRangeAllObjectParams struct {
-	Beginning   pgtype.Date
-	Beginning_2 pgtype.Date
-	ID          int32
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+	Ignoreid  int32
 }
 
 func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentalsInRangeAllObjectParams) ([]Rental, error) {
-	rows, err := q.db.Query(ctx, getRentalsInRangeAllObject, arg.Beginning, arg.Beginning_2, arg.ID)
+	rows, err := q.db.Query(ctx, getRentalsInRangeAllObject, arg.Beginning, arg.Ending, arg.Ignoreid)
 	if err != nil {
 		return nil, err
 	}
@@ -141,22 +141,22 @@ func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentals
 }
 
 const getRentalsInRangeByObject = `-- name: GetRentalsInRangeByObject :many
-SELECT id, object_id, beginning, ending, description FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 AND object_id = $4::int ORDER BY "beginning"
+SELECT id, object_id, beginning, ending, description FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 AND object_id = $4 ORDER BY beginning
 `
 
 type GetRentalsInRangeByObjectParams struct {
-	Beginning   pgtype.Date
-	Beginning_2 pgtype.Date
-	ID          int32
-	Column4     int32
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+	Ignoreid  int32
+	Objectid  int32
 }
 
 func (q *Queries) GetRentalsInRangeByObject(ctx context.Context, arg GetRentalsInRangeByObjectParams) ([]Rental, error) {
 	rows, err := q.db.Query(ctx, getRentalsInRangeByObject,
 		arg.Beginning,
-		arg.Beginning_2,
-		arg.ID,
-		arg.Column4,
+		arg.Ending,
+		arg.Ignoreid,
+		arg.Objectid,
 	)
 	if err != nil {
 		return nil, err

@@ -33,10 +33,10 @@ func holidayConflicts(queries *datastore.Queries, ctx context.Context, excludeId
 
 func rentalConflictsByObject(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time, objectId int32) templates.ErrorCode {
 	queryParam := datastore.GetRentalsInRangeByObjectParams{
-		Beginning:   pgtype.Date{Time: beginning, Valid: true},
-		Beginning_2: pgtype.Date{Time: ending, Valid: true},
-		ID:          excludeId,
-		Column4:     objectId,
+		Beginning: pgtype.Date{Time: beginning, Valid: true},
+		Ending:    pgtype.Date{Time: ending, Valid: true},
+		Ignoreid:  excludeId,
+		Objectid:  objectId,
 	}
 
 	rentals, err := queries.GetRentalsInRangeByObject(ctx, queryParam)
@@ -55,9 +55,9 @@ func rentalConflictsByObject(queries *datastore.Queries, ctx context.Context, ex
 
 func rentalConflicts(queries *datastore.Queries, ctx context.Context, excludeId int32, beginning, ending time.Time) templates.ErrorCode {
 	queryParam := datastore.GetRentalsInRangeAllObjectParams{
-		Beginning:   pgtype.Date{Time: beginning, Valid: true},
-		Beginning_2: pgtype.Date{Time: ending, Valid: true},
-		ID:          excludeId,
+		Beginning: pgtype.Date{Time: beginning, Valid: true},
+		Ending:    pgtype.Date{Time: ending, Valid: true},
+		Ignoreid:  excludeId,
 	}
 
 	rentals, err := queries.GetRentalsInRangeAllObject(ctx, queryParam)

@@ -5,15 +5,16 @@
 // DB_URL: The URL for the database. Default is "postgres://myadmin:mypassword@localhost:5432/rental_db".
 // PORT: The port for the application. Default is "8081".
 // SECRET: The secret for the application. Default is "secret".
-// MODE: The mode for the application. Default is "DEV" which logs and returns extra details.
 package rental
 
 import (
 	"cmp"
 	"context"
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -35,11 +36,7 @@ const (
 )
 
 func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
-	mode := cmp.Or(getenv("MODE"), "DEV")
-
-	if mode == "DEV" {
-		log.Printf("!!! Running in development mode !!!\n")
-	}
+	isRelease := gin.Mode() == gin.ReleaseMode
 
 	dbUrl := cmp.Or(getenv("DB_URL"), defaultDbURL)
 
@@ -49,7 +46,7 @@ func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
 		return nil, err
 	}
 
-	if mode == "DEV" {
+	if !isRelease {
 		logger := log.New(os.Stdout, "rental", log.LstdFlags)
 		dbConfig.ConnConfig.Tracer = &rentalQueryTracer{log: logger}
 	}
@@ -82,7 +79,17 @@ func (tracer *rentalQueryTracer) TraceQueryStart(
 	ctx context.Context,
 	_ *pgx.Conn,
 	data pgx.TraceQueryStartData) context.Context {
-	tracer.log.Printf("Executing command '%s' (with '%s')", data.SQL, data.Args)
+
+	args := ""
+
+	for i, arg := range data.Args {
+		if i > 0 {
+			args += ", "
+		}
+		args += fmt.Sprintf("$%d=%s", i+1, arg)
+	}
+
+	tracer.log.Printf("Executing command '%s' (with '%s')\n", data.SQL, args)
 
 	return ctx
 }

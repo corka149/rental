@@ -14,7 +14,7 @@ UPDATE rentals SET "object_id" = $1, "beginning" = $2, "ending" = $3, "descripti
 DELETE FROM rentals WHERE id = $1 RETURNING *;
 
 -- name: GetRentalsInRangeByObject :many
-SELECT * FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 AND object_id = $4::int ORDER BY "beginning"; 
+SELECT * FROM rentals WHERE ((beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending))) AND id <> sqlc.arg(ignoreId) AND object_id = sqlc.arg(objectId) ORDER BY beginning; 
 
 -- name: GetRentalsInRangeAllObject :many
-SELECT * FROM rentals WHERE (("beginning" <= $1 AND $1 <= "ending") OR ("beginning" <= $2 AND $2 <= "ending")) AND id <> $3 ORDER BY "beginning"; 
+SELECT * FROM rentals WHERE ((beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending))) AND id <> sqlc.arg(ignoreId) ORDER BY beginning;

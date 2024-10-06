@@ -64,10 +64,10 @@ func searchCalendar(queries *datastore.Queries) gin.HandlerFunc {
 		ending := beginning.AddDate(0, 1, 0)
 
 		params := datastore.GetRentalsInRangeByObjectParams{
-			Column4:     int32(objectId),
-			Beginning:   pgtype.Date{Time: beginning, Valid: true},
-			Beginning_2: pgtype.Date{Time: ending, Valid: true},
-			ID:          0,
+			Objectid:  int32(objectId),
+			Beginning: pgtype.Date{Time: beginning, Valid: true},
+			Ending:    pgtype.Date{Time: ending, Valid: true},
+			Ignoreid:  0,
 		}
 
 		entries, err := queries.GetRentalsInRangeByObject(c.Request.Context(), params)
