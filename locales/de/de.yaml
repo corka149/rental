@@ -41,7 +41,7 @@ de:
     object: "Objekt"
   calendar:
     selectOne: "Bitte wählen"
-    title: "Prüfe vorab die Verfügbarkeit"
+    title: "Verfügbarkeit prüfen"
   errors:
     # GENERAL
     unable_to_get_data: "Daten konnten nicht abgerufen werden."

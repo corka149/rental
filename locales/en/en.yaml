@@ -41,7 +41,7 @@ en:
     object: "Object"
   calendar:
     selectOne: "Please select"
-    title: "Check availability in advance"
+    title: "Check availability"
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."

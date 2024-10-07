@@ -89,6 +89,10 @@ func searchCalendar(queries *datastore.Queries) gin.HandlerFunc {
 				entriesData = append(entriesData, CalendarEntry{OccursOn: occursOn})
 				occursOn = occursOn.AddDate(0, 0, 1)
 			}
+
+			if entry.Beginning.Time != entry.Ending.Time {
+				entriesData = append(entriesData, CalendarEntry{OccursOn: entry.Ending.Time})
+			}
 		}
 
 		holidayParams := datastore.GetHolidaysInRangeParams{
@@ -114,6 +118,10 @@ func searchCalendar(queries *datastore.Queries) gin.HandlerFunc {
 			for occursOn.Before(entry.Ending.Time) {
 				entriesData = append(entriesData, CalendarEntry{OccursOn: occursOn})
 				occursOn = occursOn.AddDate(0, 0, 1)
+			}
+
+			if entry.Beginning.Time != entry.Ending.Time {
+				entriesData = append(entriesData, CalendarEntry{OccursOn: entry.Ending.Time})
 			}
 		}
 
