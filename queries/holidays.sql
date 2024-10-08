@@ -15,3 +15,6 @@ DELETE FROM holidays WHERE id = $1 RETURNING *;
 
 -- name: GetHolidaysInRange :many
 SELECT * FROM holidays WHERE ((beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending))) AND id <> sqlc.arg(ignoreId) ORDER BY beginning; 
+
+-- name: DeleteHolidaysInRange :many
+DELETE FROM holidays WHERE (beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) RETURNING *;

@@ -11,6 +11,7 @@ import (
 	"github.com/corka149/rental"
 	"github.com/corka149/rental/app"
 	"github.com/corka149/rental/datastore"
+	"github.com/corka149/rental/jobs"
 	"github.com/corka149/rental/locales"
 	"github.com/corka149/rental/middleware"
 	"github.com/corka149/rental/schema"
@@ -70,6 +71,11 @@ func Run(ctx context.Context, getenv func(string) string) error {
 	if err != nil {
 		return fmt.Errorf("failed to run migration: %w", err)
 	}
+
+	// Run cleanup
+	jobs.CleanUp(ctx, queries)
+
+	// Run server
 
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))

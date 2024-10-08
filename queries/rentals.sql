@@ -18,3 +18,6 @@ SELECT * FROM rentals WHERE ((beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg
 
 -- name: GetRentalsInRangeAllObject :many
 SELECT * FROM rentals WHERE ((beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending))) AND id <> sqlc.arg(ignoreId) ORDER BY beginning;
+
+-- name: DeleteRentalsInRange :many
+DELETE FROM rentals WHERE (beginning BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) OR (ending BETWEEN sqlc.arg(beginning) AND sqlc.arg(ending)) RETURNING *;

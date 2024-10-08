@@ -49,6 +49,40 @@ func (q *Queries) DeleteHoliday(ctx context.Context, id int32) (Holiday, error) 
 	return i, err
 }
 
+const deleteHolidaysInRange = `-- name: DeleteHolidaysInRange :many
+DELETE FROM holidays WHERE (beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2) RETURNING id, beginning, ending, title
+`
+
+type DeleteHolidaysInRangeParams struct {
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+}
+
+func (q *Queries) DeleteHolidaysInRange(ctx context.Context, arg DeleteHolidaysInRangeParams) ([]Holiday, error) {
+	rows, err := q.db.Query(ctx, deleteHolidaysInRange, arg.Beginning, arg.Ending)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Holiday
+	for rows.Next() {
+		var i Holiday
+		if err := rows.Scan(
+			&i.ID,
+			&i.Beginning,
+			&i.Ending,
+			&i.Title,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getHolidayById = `-- name: GetHolidayById :one
 SELECT id, beginning, ending, title FROM holidays WHERE id = $1
 `

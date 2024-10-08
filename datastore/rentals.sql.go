@@ -57,6 +57,41 @@ func (q *Queries) DeleteRental(ctx context.Context, id int32) (Rental, error) {
 	return i, err
 }
 
+const deleteRentalsInRange = `-- name: DeleteRentalsInRange :many
+DELETE FROM rentals WHERE (beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2) RETURNING id, object_id, beginning, ending, description
+`
+
+type DeleteRentalsInRangeParams struct {
+	Beginning pgtype.Date
+	Ending    pgtype.Date
+}
+
+func (q *Queries) DeleteRentalsInRange(ctx context.Context, arg DeleteRentalsInRangeParams) ([]Rental, error) {
+	rows, err := q.db.Query(ctx, deleteRentalsInRange, arg.Beginning, arg.Ending)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rental
+	for rows.Next() {
+		var i Rental
+		if err := rows.Scan(
+			&i.ID,
+			&i.ObjectID,
+			&i.Beginning,
+			&i.Ending,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRentalById = `-- name: GetRentalById :one
 SELECT id, object_id, beginning, ending, description FROM rentals WHERE id = $1
 `
