@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -26,13 +26,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
-	err := Run(context.Background(), os.Getenv)
-
-	log.Fatalln(err)
-}
-
-func Run(ctx context.Context, getenv func(string) string) error {
+func NewServer(ctx context.Context, getenv func(string) string) (*Server, error) {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
 	defer cancel()
 
@@ -40,17 +34,16 @@ func Run(ctx context.Context, getenv func(string) string) error {
 	err := godotenv.Load()
 
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("failed to load .env file: %w", err)
+		return nil, fmt.Errorf("failed to load .env file: %w", err)
 	}
 
 	// Setup config
 	config, err := rental.Setup(ctx, getenv)
 
 	if err != nil {
-		return fmt.Errorf("failed to setup config: %w", err)
+		return nil, fmt.Errorf("failed to setup config: %w", err)
 	}
 
-	defer config.DbPool.Close()
 	queries := datastore.New(config.DbPool)
 
 	// Load locales
@@ -69,7 +62,7 @@ func Run(ctx context.Context, getenv func(string) string) error {
 	err = schema.RunMigration(ctx, config)
 
 	if err != nil {
-		return fmt.Errorf("failed to run migration: %w", err)
+		return nil, fmt.Errorf("failed to run migration: %w", err)
 	}
 
 	// Run cleanup
@@ -84,13 +77,27 @@ func Run(ctx context.Context, getenv func(string) string) error {
 
 	app.RegisterRoutes(router, ctx, queries, config)
 
-	address := fmt.Sprintf(":%s", config.Port)
-
-	err = router.Run(address)
-
-	if err != nil {
-		return fmt.Errorf("failed to run server: %w", err)
+	s := &Server{
+		Router:  router,
+		Config:  config,
+		Queries: queries,
 	}
 
-	return nil
+	return s, nil
+}
+
+func (s *Server) Close() {
+	s.Config.DbPool.Close()
+}
+
+type Server struct {
+	Router  *gin.Engine
+	Config  *rental.Config
+	Queries *datastore.Queries
+}
+
+func (s *Server) Run() error {
+	address := fmt.Sprintf(":%s", s.Config.Port)
+
+	return s.Router.Run(address)
 }
