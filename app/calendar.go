@@ -44,20 +44,30 @@ func searchCalendar(queries *datastore.Queries) gin.HandlerFunc {
 			return
 		}
 
-		monthStr := c.Query("month")
-		month, err := strconv.Atoi(monthStr)
+		now := time.Now()
+		month := int(now.Month())
+		year := now.Year()
 
-		if err != nil {
-			c.JSON(400, gin.H{"error": "Invalid month"})
-			return
+		monthStr := c.Query("month")
+
+		if monthStr != "" {
+			month, err = strconv.Atoi(monthStr)
+
+			if err != nil {
+				c.JSON(400, gin.H{"error": "Invalid month"})
+				return
+			}
 		}
 
 		yearStr := c.Query("year")
-		year, err := strconv.Atoi(yearStr)
 
-		if err != nil {
-			c.JSON(400, gin.H{"error": "Invalid year"})
-			return
+		if yearStr != "" {
+			year, err = strconv.Atoi(yearStr)
+
+			if err != nil {
+				c.JSON(400, gin.H{"error": "Invalid year"})
+				return
+			}
 		}
 
 		beginning := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
