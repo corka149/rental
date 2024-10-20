@@ -1,8 +1,8 @@
 package templates
 
-
 import (
 	"github.com/invopop/ctxi18n/i18n"
+	"github.com/corka149/rental/datastore"
 )
 
 templ Layout(userName string, contents templ.Component) {
@@ -48,7 +48,7 @@ templ Menu(userName string) {
 	<div class="bg-indigo-900 text-white">
 		<nav class="max-w-6xl mx-auto px-4">
 			<div class="flex justify-between">
-                <!-- Logo or Brand -->
+				<!-- Logo or Brand -->
 				<div class="flex space-x-4">
 					<a href="/">
 						<div class="neonText text-4xl py-3">
@@ -56,8 +56,8 @@ templ Menu(userName string) {
 						</div>
 					</a>
 				</div>
-                <!-- Primary Navbar items -->
-                <div class="hidden md:flex items-center space-x-1">
+				<!-- Primary Navbar items -->
+				<div class="hidden md:flex items-center space-x-1">
 					if userName != "" {
 						<a href="/" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.home") }</a>
 						<a href="/objects" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.objects") }</a>
@@ -65,9 +65,9 @@ templ Menu(userName string) {
 						<a href="/rentals" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.rentals") }</a>
 						<a href="/auth/logout" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.logout") }</a>
 					} else {
-                    	<a href="/auth/login" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.login") }</a>
+						<a href="/auth/login" class="py-5 px-3 hover:underline">{ i18n.T(ctx, "menu.login") }</a>
 					}
-                </div>
+				</div>
 				<!-- Mobile menu button -->
 				<div class="md:hidden flex items-center">
 					<button class="mobile-menu-button">
@@ -101,7 +101,10 @@ templ Menu(userName string) {
 </script>
 }
 
-templ Index() {
+templ Index(locale string, objects []datastore.Object) {
 	<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="mt-6" style="display: flex; justify-content: center; align-items: center;">
+			@CalendarIndex(locale, objects)
+		</div>
 	</div>
 }
