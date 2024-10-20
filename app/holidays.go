@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -18,7 +19,7 @@ func indexHolidays(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error getting holidays: %v", err)
-			c.Redirect(302, "/")
+			c.Redirect(http.StatusFound, "/")
 			c.Abort()
 			return
 		}
@@ -52,7 +53,7 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing from date: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -61,7 +62,7 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing to date: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -100,12 +101,12 @@ func createHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if _, err := queries.CreateHoliday(c.Request.Context(), holiday); err != nil {
 			log.Printf("Error creating holiday: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
 
-		c.Redirect(302, "/holidays")
+		c.Redirect(http.StatusFound, "/holidays")
 	}
 }
 
@@ -117,7 +118,7 @@ func updateHolidayForm(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing holiday id: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -126,7 +127,7 @@ func updateHolidayForm(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error getting holiday: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -143,7 +144,7 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing holiday id: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -156,7 +157,7 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing from date: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -165,7 +166,7 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing to date: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -192,7 +193,10 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 				Ending:    pgtype.Date{Time: ending, Valid: true},
 			}
 
+			c.Status(http.StatusBadRequest)
+
 			templates.Layout(user.Name, templates.HolidayForm(holiday, idStr, errCodes...)).Render(c.Request.Context(), c.Writer)
+
 			return
 		}
 
@@ -205,12 +209,12 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if _, err := queries.UpdateHoliday(c.Request.Context(), holiday); err != nil {
 			log.Printf("Error updating holiday: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
 
-		c.Redirect(302, "/holidays")
+		c.Redirect(http.StatusFound, "/holidays")
 	}
 }
 
@@ -221,7 +225,7 @@ func deleteHoliday(queries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error parsing holiday id: %v", err)
-			c.Redirect(302, "/holidays")
+			c.Redirect(http.StatusFound, "/holidays")
 			c.Abort()
 			return
 		}
@@ -230,6 +234,6 @@ func deleteHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			log.Printf("Error deleting holiday: %v", err)
 		}
 
-		c.Redirect(302, "/holidays")
+		c.Redirect(http.StatusFound, "/holidays")
 	}
 }

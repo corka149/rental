@@ -103,8 +103,12 @@ func CreateObject(queries *datastore.Queries, name string) datastore.Object {
 }
 
 func CreateHoliday(queries *datastore.Queries, mod ...func(*datastore.CreateHolidayParams)) datastore.Holiday {
+	now := time.Now()
+
 	params := &datastore.CreateHolidayParams{
-		Title: "Holiday",
+		Title:     "Holiday",
+		Beginning: pgtype.Date{Time: now, Valid: true},
+		Ending:    pgtype.Date{Time: now.AddDate(0, 0, 1), Valid: true},
 	}
 
 	for _, m := range mod {
