@@ -9,24 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAppIndexWithoutLogin(t *testing.T) {
-	// Arrange
-	s := rentaltesting.Setup()
-	w := httptest.NewRecorder()
-
-	// Act
-	req, _ := http.NewRequest("GET", "/", nil)
-
-	s.Router.ServeHTTP(w, req)
-
-	// Assert
-	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Contains(t, w.Body.String(), "Login")
-
-	// Teardown
-}
-
-func TestGetAppIndexWithLogin(t *testing.T) {
+func TestIndexHolidays(t *testing.T) {
 	// Arrange
 	s := rentaltesting.Setup()
 	w := httptest.NewRecorder()
@@ -35,14 +18,32 @@ func TestGetAppIndexWithLogin(t *testing.T) {
 	user := rentaltesting.CreateUser(s.Queries, password)
 
 	// Act
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/holidays", nil)
 	rentaltesting.Login(s, req, user.Email, password)
 
 	s.Router.ServeHTTP(w, req)
 
 	// Assert
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Contains(t, w.Body.String(), "Logout")
+
+	// Teardown
+	rentaltesting.Teardown(s.Queries)
+}
+
+func TestIndexHolidaysRequiresAuth(t *testing.T) {
+	// Arrange
+	s := rentaltesting.Setup()
+	w := httptest.NewRecorder()
+
+	// Act
+	req, _ := http.NewRequest("GET", "/holidays", nil)
+
+	s.Router.ServeHTTP(w, req)
+
+	// Assert
+	assert.Equal(t, http.StatusFound, w.Code)
+
+	assert.Contains(t, w.Header().Get("Location"), "/auth/login")
 
 	// Teardown
 	rentaltesting.Teardown(s.Queries)
