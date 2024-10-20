@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/corka149/rental/datastore"
 	"github.com/corka149/rental/dto"
@@ -20,7 +21,7 @@ func register(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Println(err)
-			c.Status(201)
+			c.Status(http.StatusCreated)
 			return
 		}
 
@@ -28,7 +29,7 @@ func register(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Println(err)
-			c.Status(201)
+			c.Status(http.StatusCreated)
 			return
 		}
 
@@ -42,12 +43,12 @@ func register(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Println(err)
-			c.Status(201)
+			c.Status(http.StatusCreated)
 			return
 		}
 
 		log.Println("User created")
-		c.Status(201)
+		c.Status(http.StatusCreated)
 	}
 }
 
@@ -67,7 +68,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 
 		if email == "" || password == "" {
 			log.Println("Email or password is empty", email, password)
-			c.Status(200)
+			c.Status(http.StatusOK)
 			return
 		}
 
@@ -75,7 +76,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error getting user by email: %v", err)
-			c.Redirect(200, "/auth/login")
+			c.Redirect(http.StatusOK, "/auth/login")
 			return
 		}
 
@@ -83,7 +84,8 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Password not match: %v", err)
-			c.Redirect(200, "/auth/login")
+			c.Status(http.StatusUnauthorized)
+			templates.Layout("", templates.Login()).Render(c.Request.Context(), c.Writer)
 			return
 		}
 
@@ -91,7 +93,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 		session.Set("user", userData.ID)
 		session.Save()
 
-		c.Redirect(302, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 }
 
@@ -100,7 +102,7 @@ func logout() gin.HandlerFunc {
 		session := sessions.Default(c)
 		session.Clear()
 		session.Save()
-		c.Redirect(302, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 }
 

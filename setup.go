@@ -36,7 +36,7 @@ const (
 )
 
 func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
-	isRelease := gin.Mode() == gin.ReleaseMode
+	isDebugMode := gin.Mode() == gin.DebugMode
 
 	dbUrl := cmp.Or(getenv("DB_URL"), defaultDbURL)
 
@@ -46,7 +46,7 @@ func Setup(ctx context.Context, getenv func(string) string) (*Config, error) {
 		return nil, err
 	}
 
-	if !isRelease {
+	if isDebugMode {
 		logger := log.New(os.Stdout, "rental", log.LstdFlags)
 		dbConfig.ConnConfig.Tracer = &rentalQueryTracer{log: logger}
 	}

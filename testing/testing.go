@@ -3,15 +3,21 @@ package rentaltesting
 
 import (
 	"context"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/corka149/rental/cmd"
 	"github.com/corka149/rental/datastore"
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgtype"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Setup() *cmd.Server {
+	gin.SetMode(gin.TestMode)
 	ctx := context.TODO()
 
 	s, err := cmd.NewServer(ctx, getenv)
@@ -19,6 +25,9 @@ func Setup() *cmd.Server {
 	if err != nil {
 		panic(err)
 	}
+
+	// Run clean up before running tests
+	Teardown(s.Queries)
 
 	return s
 }
@@ -65,6 +74,7 @@ func CreateUser(queries *datastore.Queries, password string, mod ...func(*datast
 	}
 
 	params := &datastore.CreateUserParams{
+		Name:     "testUser",
 		Email:    "user@test.org",
 		Password: string(hashedPassword),
 	}
@@ -131,4 +141,34 @@ func CreateRental(queries *datastore.Queries, objectid int32, mod ...func(*datas
 	}
 
 	return rental
+}
+
+func Login(s *cmd.Server, wanted *http.Request, email, password string) {
+	w := httptest.NewRecorder()
+
+	formData := url.Values{}
+	formData.Set("email", email)
+	formData.Set("password", password)
+
+	// Act
+	req, err := http.NewRequest("POST", "/auth/login", strings.NewReader(formData.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	if err != nil {
+		panic(err)
+	}
+
+	s.Router.ServeHTTP(w, req)
+
+	if http.StatusFound != w.Code {
+		panic("Login failed")
+	}
+
+	session := w.Header().Get("Set-Cookie")
+
+	if !strings.Contains(session, "rental=") {
+		panic("No session")
+	}
+
+	wanted.Header.Set("Cookie", session)
 }
