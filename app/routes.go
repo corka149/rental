@@ -14,18 +14,20 @@ import (
 func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.Queries, config *rental.Config) {
 	router.StaticFS("/static", http.FS(static.Assets))
 
+	basicAuth := gin.BasicAuth(gin.Accounts{
+		config.AdminUsername: config.AdminUserPassword,
+	})
+
+	rLimiter := middleware.RateLimiter()
+
 	// ==================== HOME ====================
 	router.GET("/", indexHome(queries))
 
 	// ==================== AUTH ====================
-	ba := gin.BasicAuth(gin.Accounts{
-		config.AdminUsername: config.AdminUserPassword,
-	})
-	rLimiter := middleware.RateLimiter()
 
 	auth := router.Group("/auth")
 
-	auth.POST("/register", rLimiter, ba, register(queries))
+	auth.POST("/register", rLimiter, basicAuth, register(queries))
 	auth.GET("/login", loginForm(queries))
 	auth.POST("/login", rLimiter, login(queries))
 	auth.GET("/logout", logout())
@@ -63,4 +65,9 @@ func RegisterRoutes(router *gin.Engine, ctx context.Context, queries *datastore.
 	// ==================== CALENDAR ====================
 	router.GET("/calendar", indexCalendar(queries))
 	router.GET("/calendar/search", searchCalendar(queries))
+
+	// ==================== ADMIN ====================
+	admin := router.Group("/admin")
+
+	admin.GET("/cleanup", rLimiter, basicAuth, ForceCleanUp(queries))
 }
