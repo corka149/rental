@@ -181,7 +181,7 @@ func updateHoliday(queries *datastore.Queries) gin.HandlerFunc {
 			errCodes = append(errCodes, errCode)
 		}
 
-		if errCode := holidayConflicts(queries, c.Request.Context(), 0, beginning, ending); errCode != "" {
+		if errCode := holidayConflicts(queries, c.Request.Context(), int32(id), beginning, ending); errCode != "" {
 			errCodes = append(errCodes, errCode)
 		}
 
