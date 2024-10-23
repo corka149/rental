@@ -40,4 +40,4 @@ jobs:
     - name: Test
       run: go test -v ./...
       env:
-        DB_URL: postgres://myadmin:mypassword@postgres:5432/test_rental_db
+        DB_URL: "postgres://myadmin:mypassword@postgres:5432/test_rental_db"

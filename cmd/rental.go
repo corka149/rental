@@ -51,18 +51,18 @@ func NewServer(ctx context.Context, getenv func(string) string) (*Server, error)
 		log.Fatalf("error loading locales: %v", err)
 	}
 
-	// Session store
-	db := stdlib.OpenDBFromPool(config.DbPool)
-	store, err := postgres.NewStore(db, []byte(config.Secret))
-	if err != nil {
-		log.Fatalf("failed to create store: %v", err)
-	}
-
 	// Run migration
 	err = schema.RunMigration(ctx, config)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to run migration: %w", err)
+	}
+
+	// Session store
+	db := stdlib.OpenDBFromPool(config.DbPool)
+	store, err := postgres.NewStore(db, []byte(config.Secret))
+	if err != nil {
+		log.Fatalf("failed to create store: %v", err)
 	}
 
 	// Run cleanup
