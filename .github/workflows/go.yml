@@ -12,6 +12,19 @@ on:
 jobs:
 
   build:
+    services:
+    postgres:
+      image: postgres
+      env:
+        POSTGRES_USER: myadmin
+        POSTGRES_PASSWORD: mypassword
+        POSTGRES_DB: test_rental_db
+      options: >-
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -26,3 +39,5 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+      env:
+        DB_URL: postgres://myadmin:mypassword@postgres:5432/test_rental_db
