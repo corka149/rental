@@ -2,10 +2,12 @@
 package rentaltesting
 
 import (
+	"cmp"
 	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -60,7 +62,8 @@ func Teardown(queries *datastore.Queries) {
 
 func getenv(key string) string {
 	if key == "DB_URL" {
-		return "postgres://myadmin:mypassword@localhost:5432/test_rental_db"
+		fallback := "postgres://myadmin:mypassword@localhost:5432/test_rental_db"
+		return cmp.Or(os.Getenv(key), fallback)
 	}
 
 	return ""
