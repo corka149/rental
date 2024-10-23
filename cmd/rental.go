@@ -53,7 +53,7 @@ func NewServer(ctx context.Context, getenv func(string) string) (*Server, error)
 
 	// Session store
 	db := stdlib.OpenDBFromPool(config.DbPool)
-	store, err := postgres.NewStore(db, []byte("secret"))
+	store, err := postgres.NewStore(db, []byte(config.Secret))
 	if err != nil {
 		log.Fatalf("failed to create store: %v", err)
 	}
