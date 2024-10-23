@@ -189,3 +189,34 @@ func TestUpdateHoliday(t *testing.T) {
 	// Teardown
 	rentaltesting.Teardown(s.Queries)
 }
+
+func TestDeleteHoliday(t *testing.T) {
+	// Arrange
+	s := rentaltesting.Setup()
+	w := httptest.NewRecorder()
+
+	password := "password"
+	user := rentaltesting.CreateUser(s.Queries, password)
+
+	holiday := rentaltesting.CreateHoliday(s.Queries)
+
+	// Act
+	url := fmt.Sprintf("/holidays/%d/delete", holiday.ID)
+
+	req, _ := http.NewRequest("POST", url, nil)
+
+	rentaltesting.Login(s, req, user.Email, password)
+
+	s.Router.ServeHTTP(w, req)
+
+	// Assert
+	assert.Equal(t, http.StatusFound, w.Code)
+
+	holidays, err := s.Queries.GetHolidays(context.Background())
+
+	assert.Nil(t, err)
+	assert.Len(t, holidays, 0)
+
+	// Teardown
+	rentaltesting.Teardown(s.Queries)
+}
