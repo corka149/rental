@@ -17,9 +17,14 @@ task setup
 ```
 
 The configuration can be done by the following environment variables:
+The configuration can be done by the following environment variables:
 ADMIN_USER: The username for the admin user. Default is "admin".
 ADMIN_PASSWORD: The password for the admin user. Default is "password".
-DB_URL: The URL for the database. Default is "postgres://myadmin:mypassword@localhost:5432/rental_db".
+DB_HOST: The host for the database. Default is "localhost".
+DB_PORT: The port for the database. Default is "5432".
+DB_USER: The user for the database. Default is "myadmin".
+DB_PASSWORD: The password for the database. Default is "mypassword".
+DB_NAME: The name for the database. Default is "rental_db".
 PORT: The port for the application. Default is "8081".
 SECRET: The secret for the application. Default is "secret".
 

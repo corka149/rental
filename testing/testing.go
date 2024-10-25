@@ -70,12 +70,20 @@ func log(getenv func(string) string) func(string) string {
 }
 
 func getenv(key string) string {
-	if key == "DB_URL" {
-		fallback := "postgres://myadmin:mypassword@localhost:5432/test_rental_db"
-		return cmp.Or(os.Getenv(key), fallback)
+	switch key {
+	case "DB_HOST":
+		return cmp.Or(os.Getenv(key), "localhost")
+	case "DB_PORT":
+		return cmp.Or(os.Getenv(key), "5432")
+	case "DB_USER":
+		return cmp.Or(os.Getenv(key), "myadmin")
+	case "DB_PASSWORD":
+		return cmp.Or(os.Getenv(key), "mypassword")
+	case "DB_NAME":
+		return cmp.Or(os.Getenv(key), "test_rental_db")
+	default:
+		return ""
 	}
-
-	return ""
 }
 
 func CreateUser(queries *datastore.Queries, password string, mod ...func(*datastore.CreateUserParams)) datastore.User {

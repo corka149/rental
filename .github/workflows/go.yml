@@ -40,4 +40,8 @@ jobs:
     - name: Test
       run: go test -v ./...
       env:
-        DB_URL: "postgres://myadmin:mypassword@postgres:5432/test_rental_db"
+        DB_HOST: "postgres"
+        DB_PORT: "5432"
+        DB_USER: "myadmin"
+        DB_PASSWORD: "mypassword"
+        DB_NAME: "test_rental_db"
