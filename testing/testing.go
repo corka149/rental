@@ -4,7 +4,6 @@ package rentaltesting
 import (
 	"cmp"
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -23,7 +22,7 @@ func Setup() *cmd.Server {
 	gin.SetMode(gin.TestMode)
 	ctx := context.TODO()
 
-	s, err := cmd.NewServer(ctx, log(getenv))
+	s, err := cmd.NewServer(ctx, getenv)
 
 	if err != nil {
 		panic(err)
@@ -58,14 +57,6 @@ func Teardown(queries *datastore.Queries) {
 
 	for _, object := range objects {
 		queries.DeleteObject(context.TODO(), object.ID)
-	}
-}
-
-func log(getenv func(string) string) func(string) string {
-	return func(key string) string {
-		value := getenv(key)
-		fmt.Println(key, value)
-		return value
 	}
 }
 
