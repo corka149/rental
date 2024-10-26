@@ -4,7 +4,6 @@ package rentaltesting
 import (
 	"cmp"
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
