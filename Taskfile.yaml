@@ -18,6 +18,8 @@ tasks:
 
   release:
     desc: Release
+    deps: [generate]
     cmds:
-      - docker build -t corka149/rental:6.0.9 .
-      - docker push corka149/rental:6.0.9
+      - go test ./...
+      - docker build -t corka149/rental:1.0.0 .
+      - docker push corka149/rental:1.0.0
