@@ -13,6 +13,7 @@ en:
     login: "Login"
   object:
     objects: "Objects"
+    objectsDescription: "Here you can manage your objects. You can add new objects, edit existing objects and delete objects. Objects are the things you want to rent out."
     newObject: "New Object"
     name: "Name"
     save: "Save"
@@ -20,6 +21,7 @@ en:
     deleteObjectDialog: "Should the object be deleted?"
   holiday:
     holidays: "Holidays"
+    holidaysDescription: "Here you can manage your holidays. You can add new holidays, edit existing holidays and delete holidays. Holidays are the days you are not available for rentals."
     newHoliday: "New Holiday"
     editHoliday: "Edit Holiday"
     description: "Description"
@@ -30,6 +32,7 @@ en:
     deleteHolidayDialog: "Should the holiday be deleted?"
   rental:
     rentals: "Rentals"
+    rentalDescription: "Here you can manage your rentals. You can add new rentals, edit existing rentals and delete rentals. Rentals are the periods in which your objects are rented out."
     newRental: "New Rental"
     editRental: "Edit Rental"
     description: "Description"

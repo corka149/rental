@@ -13,6 +13,7 @@ de:
     login: "Anmelden"
   object:
     objects: "Objekte"
+    objectsDescription: "Hier können Sie Ihre Objekte verwalten. Sie können neue Objekte hinzufügen, bestehende Objekte bearbeiten und Objekte löschen. Objekte sind die Dinge, die Sie vermieten möchten."
     newObject: "Neues Objekt"
     name: "Name"
     save: "Speichern"
@@ -20,6 +21,7 @@ de:
     deleteObjectDialog: "Soll das Objekt gelöscht werden?"
   holiday:
     holidays: "Urlaube"
+    holidaysDescription: "Hier können Sie Ihre Urlaube verwalten. Sie können neue Urlaube hinzufügen, bestehende Urlaube bearbeiten und Urlaube löschen. Urlaube sind die Tage, an denen Sie nicht für Vermietungen verfügbar sind."
     newHoliday: "Neuer Urlaub"
     editHoliday: "Urlaub bearbeiten"
     description: "Beschreibung"
@@ -30,6 +32,7 @@ de:
     deleteHolidayDialog: "Soll der Urlaub gelöscht werden?"
   rental:
     rentals: "Vermietungen"
+    rentalDescription: "Hier können Sie Ihre Vermietungen verwalten. Sie können neue Vermietungen hinzufügen, bestehende Vermietungen bearbeiten und Vermietungen löschen. Vermietungen sind die Zeiträume, in denen Ihre Objekte vermietet sind."
     newRental: "Neue Vermietung"
     editRental: "Vermietung bearbeiten"
     description: "Beschreibung"

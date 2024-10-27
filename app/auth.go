@@ -76,7 +76,7 @@ func login(quries *datastore.Queries) gin.HandlerFunc {
 
 		if err != nil {
 			log.Printf("Error getting user by email: %v", err)
-			c.Redirect(http.StatusOK, "/auth/login")
+			c.Redirect(http.StatusFound, "/auth/login")
 			return
 		}
 
