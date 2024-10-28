@@ -18,6 +18,9 @@ templ RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Ob
 				<li class="max-w-sm mx-auto my-1">
 					<a href={ templ.URL(fmt.Sprintf("/rentals/%d", rental.ID)) } class="block p-4 bg-gray-100 hover:bg-gray-200 rounded-lg">
 						{ rental.Beginning.Time.Format("02.01.2006") } - { rental.Ending.Time.Format("02.01.2006") } { objName(objectsById, rental.ObjectID) }
+						<div class="text-sm text-gray-500">{ rental.Description.String }</div>
+						<div class="text-sm text-gray-500">{ rental.Street.String }</div>
+						<div class="text-sm text-gray-500">{ rental.City.String }</div>
 					</a>
 				</li>
 			}

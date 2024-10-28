@@ -35,7 +35,7 @@ de:
     rentalDescription: "Hier können Sie Ihre Vermietungen verwalten. Sie können neue Vermietungen hinzufügen, bestehende Vermietungen bearbeiten und Vermietungen löschen. Vermietungen sind die Zeiträume, in denen Ihre Objekte vermietet sind."
     newRental: "Neue Vermietung"
     editRental: "Vermietung bearbeiten"
-    description: "Beschreibung"
+    description: "Bei wem?"
     beginning: "Von"
     ending: "Bis"
     street: "Straße"

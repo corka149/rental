@@ -35,7 +35,7 @@ en:
     rentalDescription: "Here you can manage your rentals. You can add new rentals, edit existing rentals and delete rentals. Rentals are the periods in which your objects are rented out."
     newRental: "New Rental"
     editRental: "Edit Rental"
-    description: "Description"
+    description: "For whom?"
     beginning: "From"
     ending: "To"
     street: "Street"
