@@ -12,7 +12,7 @@ import (
 )
 
 const createRental = `-- name: CreateRental :one
-INSERT INTO rentals ("object_id", "beginning", "ending", "description") VALUES ($1, $2, $3, $4) RETURNING id, object_id, beginning, ending, description
+INSERT INTO rentals ("object_id", "beginning", "ending", "description", "street", "city") VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, object_id, beginning, ending, description, street, city
 `
 
 type CreateRentalParams struct {
@@ -20,6 +20,8 @@ type CreateRentalParams struct {
 	Beginning   pgtype.Date
 	Ending      pgtype.Date
 	Description pgtype.Text
+	Street      pgtype.Text
+	City        pgtype.Text
 }
 
 func (q *Queries) CreateRental(ctx context.Context, arg CreateRentalParams) (Rental, error) {
@@ -28,6 +30,8 @@ func (q *Queries) CreateRental(ctx context.Context, arg CreateRentalParams) (Ren
 		arg.Beginning,
 		arg.Ending,
 		arg.Description,
+		arg.Street,
+		arg.City,
 	)
 	var i Rental
 	err := row.Scan(
@@ -36,12 +40,14 @@ func (q *Queries) CreateRental(ctx context.Context, arg CreateRentalParams) (Ren
 		&i.Beginning,
 		&i.Ending,
 		&i.Description,
+		&i.Street,
+		&i.City,
 	)
 	return i, err
 }
 
 const deleteRental = `-- name: DeleteRental :one
-DELETE FROM rentals WHERE id = $1 RETURNING id, object_id, beginning, ending, description
+DELETE FROM rentals WHERE id = $1 RETURNING id, object_id, beginning, ending, description, street, city
 `
 
 func (q *Queries) DeleteRental(ctx context.Context, id int32) (Rental, error) {
@@ -53,12 +59,14 @@ func (q *Queries) DeleteRental(ctx context.Context, id int32) (Rental, error) {
 		&i.Beginning,
 		&i.Ending,
 		&i.Description,
+		&i.Street,
+		&i.City,
 	)
 	return i, err
 }
 
 const deleteRentalsInRange = `-- name: DeleteRentalsInRange :many
-DELETE FROM rentals WHERE (beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2) RETURNING id, object_id, beginning, ending, description
+DELETE FROM rentals WHERE (beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2) RETURNING id, object_id, beginning, ending, description, street, city
 `
 
 type DeleteRentalsInRangeParams struct {
@@ -81,6 +89,8 @@ func (q *Queries) DeleteRentalsInRange(ctx context.Context, arg DeleteRentalsInR
 			&i.Beginning,
 			&i.Ending,
 			&i.Description,
+			&i.Street,
+			&i.City,
 		); err != nil {
 			return nil, err
 		}
@@ -93,7 +103,7 @@ func (q *Queries) DeleteRentalsInRange(ctx context.Context, arg DeleteRentalsInR
 }
 
 const getRentalById = `-- name: GetRentalById :one
-SELECT id, object_id, beginning, ending, description FROM rentals WHERE id = $1
+SELECT id, object_id, beginning, ending, description, street, city FROM rentals WHERE id = $1
 `
 
 func (q *Queries) GetRentalById(ctx context.Context, id int32) (Rental, error) {
@@ -105,12 +115,14 @@ func (q *Queries) GetRentalById(ctx context.Context, id int32) (Rental, error) {
 		&i.Beginning,
 		&i.Ending,
 		&i.Description,
+		&i.Street,
+		&i.City,
 	)
 	return i, err
 }
 
 const getRentals = `-- name: GetRentals :many
-SELECT id, object_id, beginning, ending, description FROM rentals ORDER BY "beginning"
+SELECT id, object_id, beginning, ending, description, street, city FROM rentals ORDER BY "beginning"
 `
 
 func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
@@ -128,6 +140,8 @@ func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 			&i.Beginning,
 			&i.Ending,
 			&i.Description,
+			&i.Street,
+			&i.City,
 		); err != nil {
 			return nil, err
 		}
@@ -140,7 +154,7 @@ func (q *Queries) GetRentals(ctx context.Context) ([]Rental, error) {
 }
 
 const getRentalsInRangeAllObject = `-- name: GetRentalsInRangeAllObject :many
-SELECT id, object_id, beginning, ending, description FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 ORDER BY beginning
+SELECT id, object_id, beginning, ending, description, street, city FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 ORDER BY beginning
 `
 
 type GetRentalsInRangeAllObjectParams struct {
@@ -164,6 +178,8 @@ func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentals
 			&i.Beginning,
 			&i.Ending,
 			&i.Description,
+			&i.Street,
+			&i.City,
 		); err != nil {
 			return nil, err
 		}
@@ -176,7 +192,7 @@ func (q *Queries) GetRentalsInRangeAllObject(ctx context.Context, arg GetRentals
 }
 
 const getRentalsInRangeByObject = `-- name: GetRentalsInRangeByObject :many
-SELECT id, object_id, beginning, ending, description FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 AND object_id = $4 ORDER BY beginning
+SELECT id, object_id, beginning, ending, description, street, city FROM rentals WHERE ((beginning BETWEEN $1 AND $2) OR (ending BETWEEN $1 AND $2)) AND id <> $3 AND object_id = $4 ORDER BY beginning
 `
 
 type GetRentalsInRangeByObjectParams struct {
@@ -206,6 +222,8 @@ func (q *Queries) GetRentalsInRangeByObject(ctx context.Context, arg GetRentalsI
 			&i.Beginning,
 			&i.Ending,
 			&i.Description,
+			&i.Street,
+			&i.City,
 		); err != nil {
 			return nil, err
 		}
@@ -218,7 +236,7 @@ func (q *Queries) GetRentalsInRangeByObject(ctx context.Context, arg GetRentalsI
 }
 
 const updateRental = `-- name: UpdateRental :one
-UPDATE rentals SET "object_id" = $1, "beginning" = $2, "ending" = $3, "description" = $4 WHERE id = $5 RETURNING id, object_id, beginning, ending, description
+UPDATE rentals SET "object_id" = $1, "beginning" = $2, "ending" = $3, "description" = $4, "street" = $5, "city" = $6 WHERE id = $7 RETURNING id, object_id, beginning, ending, description, street, city
 `
 
 type UpdateRentalParams struct {
@@ -226,6 +244,8 @@ type UpdateRentalParams struct {
 	Beginning   pgtype.Date
 	Ending      pgtype.Date
 	Description pgtype.Text
+	Street      pgtype.Text
+	City        pgtype.Text
 	ID          int32
 }
 
@@ -235,6 +255,8 @@ func (q *Queries) UpdateRental(ctx context.Context, arg UpdateRentalParams) (Ren
 		arg.Beginning,
 		arg.Ending,
 		arg.Description,
+		arg.Street,
+		arg.City,
 		arg.ID,
 	)
 	var i Rental
@@ -244,6 +266,8 @@ func (q *Queries) UpdateRental(ctx context.Context, arg UpdateRentalParams) (Ren
 		&i.Beginning,
 		&i.Ending,
 		&i.Description,
+		&i.Street,
+		&i.City,
 	)
 	return i, err
 }

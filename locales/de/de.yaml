@@ -38,6 +38,8 @@ de:
     description: "Beschreibung"
     beginning: "Von"
     ending: "Bis"
+    street: "Straße"
+    city: "Stadt"
     save: "Speichern"
     deleteRental: "Vermietung löschen"
     deleteRentalDialog: "Soll die Vermietung gelöscht werden?"
@@ -45,6 +47,7 @@ de:
   calendar:
     selectOne: "Bitte wählen"
     title: "Verfügbarkeit prüfen"
+    legend: (X = Nicht verfügbar)
   errors:
     # GENERAL
     unable_to_get_data: "Daten konnten nicht abgerufen werden."

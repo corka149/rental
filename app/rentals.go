@@ -84,6 +84,8 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 		beginningStr := c.PostForm("beginning")
 		toStr := c.PostForm("ending")
 		description := c.PostForm("description")
+		street := c.PostForm("street")
+		city := c.PostForm("city")
 		objectIDStr := c.PostForm("object")
 		objectID, err := strconv.Atoi(objectIDStr)
 
@@ -132,6 +134,8 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 				Ending:      pgtype.Date{Time: ending},
 				ObjectID:    int32(objectID),
 				Description: pgtype.Text{String: description},
+				Street:      pgtype.Text{String: street, Valid: true},
+				City:        pgtype.Text{String: city, Valid: true},
 			}
 
 			objects, err := queries.GetObjects(c.Request.Context())
@@ -151,6 +155,8 @@ func createRental(queries *datastore.Queries) gin.HandlerFunc {
 			Beginning:   pgtype.Date{Time: beginning, Valid: true},
 			Ending:      pgtype.Date{Time: ending, Valid: true},
 			Description: pgtype.Text{String: description, Valid: true},
+			Street:      pgtype.Text{String: street, Valid: true},
+			City:        pgtype.Text{String: city, Valid: true},
 			ObjectID:    int32(objectID),
 		}
 
@@ -218,6 +224,8 @@ func updateRental(queries *datastore.Queries) gin.HandlerFunc {
 		beginningStr := c.PostForm("beginning")
 		toStr := c.PostForm("ending")
 		description := c.PostForm("description")
+		street := c.PostForm("street")
+		city := c.PostForm("city")
 		objectIDStr := c.PostForm("object")
 		objectID, err := strconv.Atoi(objectIDStr)
 
@@ -267,6 +275,8 @@ func updateRental(queries *datastore.Queries) gin.HandlerFunc {
 				Ending:      pgtype.Date{Time: ending},
 				ObjectID:    int32(objectID),
 				Description: pgtype.Text{String: description},
+				Street:      pgtype.Text{String: street, Valid: true},
+				City:        pgtype.Text{String: city, Valid: true},
 			}
 
 			objects, err := queries.GetObjects(c.Request.Context())
@@ -287,6 +297,8 @@ func updateRental(queries *datastore.Queries) gin.HandlerFunc {
 			Beginning:   pgtype.Date{Time: beginning, Valid: true},
 			Ending:      pgtype.Date{Time: ending, Valid: true},
 			Description: pgtype.Text{String: description, Valid: true},
+			Street:      pgtype.Text{String: street, Valid: true},
+			City:        pgtype.Text{String: city, Valid: true},
 			ObjectID:    int32(objectID),
 		}
 

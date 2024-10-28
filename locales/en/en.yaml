@@ -38,6 +38,8 @@ en:
     description: "Description"
     beginning: "From"
     ending: "To"
+    street: "Street"
+    city: "City"
     save: "Save"
     deleteRental: "Delete rental"
     deleteRentalDialog: "Should the rental be deleted?"
@@ -45,6 +47,7 @@ en:
   calendar:
     selectOne: "Please select"
     title: "Check availability"
+    legend: "(X = Not available)"
   errors:
     # GENERAL
     unable_to_get_data: "Unable to get data."

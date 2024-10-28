@@ -9,7 +9,7 @@ import (
 templ RentalIndex(rentals []datastore.Rental, objectsById map[int32]datastore.Object) {
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<h1 class="text-2xl font-bold text-center sm:text-3xl lg:text-4xl mt-6 mb-8">{ i18n.T(ctx, "rental.rentals") }</h1>
-		<div class="bg-gray-100 text-gray-700 text-sm mx-auto text-center p-4 rounded-lg max-w-md">
+		<div class="bg-gray-100 text-gray-500 text-sm mx-auto text-center p-4 rounded-lg max-w-md">
 			{ i18n.T(ctx, "holiday.holidaysDescription") }
 		</div>
 		<a href="/rentals/new" class="block w-64 mx-auto py-2 px-4 my-2 mx-4 bg-gray-300 text-white rounded-lg text-center">{ i18n.T(ctx, "rental.newRental") }</a>
@@ -51,6 +51,20 @@ templ RentalForm(rental datastore.Rental, target string, objects []datastore.Obj
 				<input required type="text" name="description" id="description" class="mt-1 block
 					w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
 					value={ rental.Description.String }/>
+			</div>
+			<!-- STREET -->
+			<div>
+				<label for="street" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.street") }</label>
+				<input type="text" name="street" id="street" class="mt-1 block
+					w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+					value={ rental.Street.String }/>
+			</div>
+			<!-- CITY -->
+			<div>
+				<label for="city" class="block text-sm font-medium text-gray-700">{ i18n.T(ctx, "rental.city") }</label>
+				<input type="text" name="city" id="city" class="mt-1 block
+					w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+					value={ rental.City.String }/>
 			</div>
 			<!-- BEGINNING -->
 			<div>

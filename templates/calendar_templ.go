@@ -111,7 +111,20 @@ func CalendarIndex(locale string, objects []datastore.Object) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><!-- CALENDAR --><div class=\"py-2\"><div id=\"calendar\"></div></div></div><script src=\"https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js\"></script><script src=\"/static/js/calendar.js\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><!-- CALENDAR --><div class=\"py-2\"><div id=\"calendar\"></div></div><div class=\"bg-gray-100 text-gray-500 text-sm mx-auto text-center p-4 rounded-lg max-w-md\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(i18n.T(ctx, "calendar.legend"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/calendar.templ`, Line: 44, Col: 43}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><script src=\"https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js\"></script><script src=\"/static/js/calendar.js\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

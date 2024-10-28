@@ -39,6 +39,10 @@ templ CalendarIndex(locale string, objects []datastore.Object) {
                 <div class="py-2">
                     <div id="calendar"></div>
                 </div>
+
+                <div class="bg-gray-100 text-gray-500 text-sm mx-auto text-center p-4 rounded-lg max-w-md">
+			        { i18n.T(ctx, "calendar.legend") }
+		        </div>
             </div>
 
             <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>        

@@ -48,7 +48,7 @@ func ObjectIndex(objects []datastore.Object) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><div class=\"bg-gray-100 text-gray-700 text-sm mx-auto text-center p-4 rounded-lg max-w-md\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><div class=\"bg-gray-100 text-gray-500 text-sm mx-auto text-center p-4 rounded-lg max-w-md\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

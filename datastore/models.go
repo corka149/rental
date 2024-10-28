@@ -26,6 +26,8 @@ type Rental struct {
 	Beginning   pgtype.Date
 	Ending      pgtype.Date
 	Description pgtype.Text
+	Street      pgtype.Text
+	City        pgtype.Text
 }
 
 type User struct {
