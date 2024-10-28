@@ -21,5 +21,5 @@ tasks:
     deps: [generate]
     cmds:
       - go test ./...
-      - docker build -t corka149/rental:1.0.1 .
-      - docker push corka149/rental:1.0.1
+      - docker build -t corka149/rental:1.0.2 .
+      - docker push corka149/rental:1.0.2
