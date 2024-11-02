@@ -21,13 +21,22 @@ type Object struct {
 }
 
 type Rental struct {
-	ID          int32
-	ObjectID    int32
-	Beginning   pgtype.Date
-	Ending      pgtype.Date
-	Description pgtype.Text
-	Street      pgtype.Text
-	City        pgtype.Text
+	ID             int32
+	ObjectID       int32
+	Beginning      pgtype.Date
+	Ending         pgtype.Date
+	Description    pgtype.Text
+	Street         pgtype.Text
+	City           pgtype.Text
+	HouseNumber    pgtype.Text
+	PostalCode     pgtype.Text
+	WithDelivery   pgtype.Bool
+	WithSetup      pgtype.Bool
+	BeginningTime  pgtype.Time
+	EndingTime     pgtype.Time
+	PricePerObject pgtype.Numeric
+	TotalPrice     pgtype.Numeric
+	Notes          pgtype.Text
 }
 
 type User struct {
